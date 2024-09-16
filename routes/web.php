@@ -69,7 +69,7 @@ use Illuminate\Support\Facades\Route;
         // Route::post('/store-contact-us-list', [ContactUsController::class, 'storeHubungiKamiList'])
         //     ->name('store-contact-us-list');
 
-    
+
 
     // test
         Route::get('/storeImage', [BerandaController::class, 'fileStore'])
@@ -114,7 +114,7 @@ use Illuminate\Support\Facades\Route;
 
     //end
 
-    
+
      //Tentang Kami
             Route::get('/company-overview/{id}', [TentangKamiController::class, 'sekilasPerusahaan'])
                 ->name('company-overview');
@@ -218,7 +218,7 @@ use Illuminate\Support\Facades\Route;
             Route::get('/edit-list-anggot-holding/{id}', [BerandaController::class, 'editListAnggotaHolding'])
                 ->name('edit-list-anggot-holding');
     // end helper
-    
+
     // training course
 
             Route::get('traningcourse/{id}', [TrainingCourseController::class, 'traningcourse'])
@@ -270,7 +270,7 @@ use Illuminate\Support\Facades\Route;
                 ->name('delete-data-course');
 
 
-            
+
 
             Route::get('/edit-traningcourse-detail/{id}', [TrainingCourseController::class, 'editTraningCourseDetail'])
                 ->name('edit-traningcourse-detail');
@@ -314,7 +314,7 @@ use Illuminate\Support\Facades\Route;
                 ->name('delete-master-job-cavancy-detail');
 
     // end job
-      
+
     // news & update
 
             Route::get('/newsupdate/{id}', [NewsUpdateController::class, 'newsUpdate'])
@@ -375,7 +375,7 @@ use Illuminate\Support\Facades\Route;
     // home
 
     // Route::get('home/{id}', [HomeController::class, 'index'])->name('home');
-    
+
     // Route::post('/store-home', [HomeController::class, 'storeHome'])
     // ->name('store-home');
 
@@ -439,7 +439,7 @@ use Illuminate\Support\Facades\Route;
        Route::get('/view-video-popup/{id}', [TestimonialsController::class, 'viewPopUpVid'])
                 ->name('view-video-popup');
     // end Testimoni
-    
+
      // Poster
 
         Route::get('poster/{id}', [PosterController::class, 'index'])->name('poster');
@@ -470,7 +470,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('/remove-photo-poster/{id}', [PosterController::class, 'removePhotoPoster'])
                 ->name('remove-photo-poster');
     // end Poster
-    
+
      // Yotube News
 
         Route::get('video/{id}', [YotubeNewsController::class, 'index'])->name('video');
@@ -499,28 +499,28 @@ use Illuminate\Support\Facades\Route;
         Route::get('/view-video-popup/{id}', [YotubeNewsController::class, 'viewPopUpVid'])
                 ->name('view-video-popup');
     // end Yotube News
-    
+
      // socail media
 
-    Route::get('social-media/{id}', [SocialMediaController::class, 'index'])->name('social-media');
-    
-    Route::get('/get-data-social-media', [SocialMediaController::class, 'getDataSm'])
-    ->name('get-data-social-media');
+        Route::get('social-media/{id}', [SocialMediaController::class, 'index'])->name('social-media');
 
-    Route::get('/get-filters-social-media', [SocialMediaController::class, 'getDropdownSm'])
-    ->name('get-filters-social-media');
+        Route::get('/get-data-social-media', [SocialMediaController::class, 'getDataSm'])
+        ->name('get-data-social-media');
 
-    Route::get('/get-view-store-social-media/{id}', [SocialMediaController::class, 'getViewStoreSm'])
-            ->name('get-view-store-social-media');
+        Route::get('/get-filters-social-media', [SocialMediaController::class, 'getDropdownSm'])
+        ->name('get-filters-social-media');
 
-    Route::post('/store-social-media', [SocialMediaController::class, 'storeSm'])
-        ->name('store-social-media');
+        Route::get('/get-view-store-social-media/{id}', [SocialMediaController::class, 'getViewStoreSm'])
+                ->name('get-view-store-social-media');
 
-    Route::get('/edit-social-media/{id}', [SocialMediaController::class, 'getVieweditSm'])
-        ->name('edit-social-media');
+        Route::post('/store-social-media', [SocialMediaController::class, 'storeSm'])
+            ->name('store-social-media');
 
-    Route::post('/update-social-media', [SocialMediaController::class, 'updateSm'])
-            ->name('update-social-media');
+        Route::get('/edit-social-media/{id}', [SocialMediaController::class, 'getVieweditSm'])
+            ->name('edit-social-media');
+
+        Route::post('/update-social-media', [SocialMediaController::class, 'updateSm'])
+                ->name('update-social-media');
 
     // end social media
 
@@ -555,8 +555,8 @@ use Illuminate\Support\Facades\Route;
         Route::get('remove-photo-banner/{id}', [BannerController::class, 'removePhotoGalerry'])
                 ->name('remove-photo-banner');
     // end home
-    
-    
+
+
     // master
 
         Route::get('master/{id}', [HomeController::class, 'index'])->name('master');
