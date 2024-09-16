@@ -352,25 +352,36 @@ use Illuminate\Support\Facades\Route;
             Route::put('/update-news-update-detail', [NewsUpdateController::class, 'updateNewsUpdateDetail'])
                 ->name('update-news-update-detail');
 
-                Route::get('/get-data-cooperation', [JobVacancyController::class, 'getDataCooperationFilter'])
-                    ->name('get-data-cooperation');
 
-                Route::get('/get-filters-cooperation', [JobVacancyController::class, 'getDropdownCooperation'])
-                    ->name('get-filters-cooperation');
-                Route::get('/cooperation/{id}', [JobVacancyController::class, 'cooperation'])
-                    ->name('cooperation');
-                Route::get('/get-view-store-cooperation/{id}', [JobVacancyController::class, 'getViewStoreCooperation'])
-                    ->name('get-view-store-cooperation');
-
-                Route::get('/get-view-edit-cooperation/{id}', [JobVacancyController::class, 'editCooperation'])
-                    ->name('get-view-edit-cooperation');
-
-                Route::post('/store-cooperation', [JobVacancyController::class, 'storeCooperation'])
-                    ->name('store-cooperation');
-                Route::post('/update-cooperation', [JobVacancyController::class, 'updateCooperation'])
-                    ->name('update-cooperation');
     //end news
 
+    // cooperation
+
+            Route::get('/get-data-cooperation', [JobVacancyController::class, 'getDataCooperationFilter'])
+                ->name('get-data-cooperation');
+
+            Route::get('/get-filters-cooperation', [JobVacancyController::class, 'getDropdownCooperation'])
+                ->name('get-filters-cooperation');
+
+            Route::get('/cooperation/{id}', [JobVacancyController::class, 'cooperation'])
+                ->name('cooperation');
+
+            Route::get('/get-view-store-cooperation/{id}', [JobVacancyController::class, 'getViewStoreCooperation'])
+                ->name('get-view-store-cooperation');
+
+            Route::get('/get-view-edit-cooperation/{id}', [JobVacancyController::class, 'editCooperation'])
+                ->name('get-view-edit-cooperation');
+
+            Route::post('/store-cooperation', [JobVacancyController::class, 'storeCooperation'])
+                ->name('store-cooperation');
+
+            Route::post('/update-cooperation', [JobVacancyController::class, 'updateCooperation'])
+                ->name('update-cooperation');
+
+            Route::get('remove-cooperation/{id}', [JobVacancyController::class, 'removeCooperation'])
+                    ->name('remove-cooperation');
+
+    // end cooperation
 
     // home
 
@@ -410,6 +421,9 @@ use Illuminate\Support\Facades\Route;
 
         Route::get('/remove-photo-gallery/{id}', [GalleryController::class, 'removePhotoGalerry'])
                 ->name('remove-photo-gallery');
+
+        Route::get('/delete-data-gallery/{id}', [GalleryController::class, 'deleteDataGalerry'])
+                ->name('delete-data-gallery');
     // end Galery
 
     // Testimoni
@@ -436,6 +450,10 @@ use Illuminate\Support\Facades\Route;
 
         Route::get('/remove-embed-video/{id}', [TestimonialsController::class, 'removeEmbedVideo'])
                 ->name('remove-embed-video');
+
+        Route::get('/delete-data-testimoni/{id}', [TestimonialsController::class, 'deleteDataTestimoni'])
+                ->name('delete-data-testimoni');
+
        Route::get('/view-video-popup/{id}', [TestimonialsController::class, 'viewPopUpVid'])
                 ->name('view-video-popup');
     // end Testimoni
@@ -469,6 +487,9 @@ use Illuminate\Support\Facades\Route;
 
         Route::get('/remove-photo-poster/{id}', [PosterController::class, 'removePhotoPoster'])
                 ->name('remove-photo-poster');
+
+        Route::get('/delete-data-poster/{id}', [PosterController::class, 'deleteDataPoster'])
+                ->name('delete-data-poster');
     // end Poster
 
      // Yotube News
@@ -496,6 +517,9 @@ use Illuminate\Support\Facades\Route;
         Route::get('/remove-embed-video/{id}', [YotubeNewsController::class, 'removeEmbedVideo'])
                 ->name('remove-embed-video');
 
+        Route::get('/delete-data-video/{id}', [YotubeNewsController::class, 'deleteDataVideo'])
+                ->name('delete-data-video');
+
         Route::get('/view-video-popup/{id}', [YotubeNewsController::class, 'viewPopUpVid'])
                 ->name('view-video-popup');
     // end Yotube News
@@ -521,6 +545,10 @@ use Illuminate\Support\Facades\Route;
 
         Route::post('/update-social-media', [SocialMediaController::class, 'updateSm'])
                 ->name('update-social-media');
+
+
+       Route::get('/delete-data-sm/{id}', [SocialMediaController::class, 'deleteDataSm'])
+                ->name('delete-data-sm');
 
     // end social media
 
@@ -552,8 +580,11 @@ use Illuminate\Support\Facades\Route;
         Route::post('update-banner', [BannerController::class, 'bannerUpdate'])
                 ->name('update-banner');
 
-        Route::get('remove-photo-banner/{id}', [BannerController::class, 'removePhotoGalerry'])
+        Route::get('remove-photo-banner/{id}', [BannerController::class, 'removePhotoBanner'])
                 ->name('remove-photo-banner');
+
+        Route::get('delete-data-banner/{id}', [BannerController::class, 'deleteDataBanner'])
+                ->name('delete-data-banner');
     // end home
 
 

@@ -311,13 +311,13 @@ function formatDate(dateStr) {
                                         <div class="ml-auto d-flex">
 
                                             <div class="col text-right mb-3">
-                                                <a type="button" style="color:Green" href="/public/edit-banner/${btoa(value.id)}/${btoa(value.id_category)}" title="Edit Course">
+                                                <a type="button" style="color:Green" href="/public/edit-banner/${btoa(value.id)}/${btoa(value.id_category)}" title="Edit Banner">
                                                     <i class="fa fa-bars"></i>
                                                 </a>
                                             </div>
                                             <div class="col text-right mb-3">
-                                                <a type="button" href="#" style="color:red" onclick="stopPrompt('${value.id}')" title="Delete">
-                                                    <i class="fa fa-stop"></i>
+                                                <a type="button" href="#" style="color:red" onclick="removeBanner('${value.id}')" title="Delete Banner">
+                                                    <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -398,8 +398,8 @@ function formatDate(dateStr) {
         });
     }
 
-    function stopPrompt(id) {
-        var url = "{{ route('stop-data-course',':id') }}";
+    function removeBanner(id) {
+        var url = "{{ route('delete-data-banner',':id') }}";
         url = url.replace(":id", id);
 
         const Toast = Swal.mixin({

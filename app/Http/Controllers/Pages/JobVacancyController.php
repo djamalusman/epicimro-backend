@@ -373,7 +373,7 @@ class JobVacancyController extends Controller
             if ($req->photo !=null) {
                 $listItem->file                 = $filename;
             }
-            
+
             $listItem->status                   = $req->status;
             $listItem->job_description      = (new HelperController)->scriptStripper( $req->jobdescripsi ?? '-');
             $listItem->skill_requirment      = (new HelperController)->scriptStripper( $req->skillRequirement ?? '-');
@@ -483,7 +483,15 @@ class JobVacancyController extends Controller
         return json_encode($response);
     }
 
+    public function cooperation($id)
+    {
+        $data['menus'] = MenuModel::find(base64_decode($id));
+        $data['title']      = 'Cooperation | Pages';
+        $data['title_page'] = 'Cooperation | ' . $data['menus']->menu_name;
+        $data['menu']       = MenuModel::all();
 
+        return view('pages.cooperation', $data);
+    }
 
     public function getDataCooperationFilter(Request $request) {
 
@@ -522,15 +530,7 @@ class JobVacancyController extends Controller
 
         return response()->json($filters);
     }
-    public function cooperation($id)
-    {
-        $data['menus'] = MenuModel::find(base64_decode($id));
-        $data['title']      = 'Cooperation | Pages';
-        $data['title_page'] = 'Cooperation | ' . $data['menus']->menu_name;
-        $data['menu']       = MenuModel::all();
 
-        return view('pages.cooperation', $data);
-    }
     public function getViewStoreCooperation($id)
     {
         $data['menus'] = MenuModel::find(base64_decode($id));
@@ -665,6 +665,18 @@ class JobVacancyController extends Controller
         $log_app->user_id = session()->get('id');
         $log_app->ip_address = $req->ip();
         $log_app->save();
+        return json_encode($response);
+    }
+
+    public function removeCooperation ($id)
+    {
+
+        CooperationModel::where('id', $id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus'
+        ];
         return json_encode($response);
     }
 

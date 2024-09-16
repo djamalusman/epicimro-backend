@@ -39,25 +39,25 @@ class SocialMediaController extends Controller
             WHEN d_socialmedia.status = 3 THEN "Non Publish"
             WHEN d_socialmedia.status = 4 THEN "Kadaluarsa"
             ELSE "Unknown"
-        END as status_training'),'d_socialmedia.nama','d_socialmedia.url') 
+        END as status_training'),'d_socialmedia.nama','d_socialmedia.url')
             ->distinct()
             ->get();
         return response()->json($filters);
     }
-    
+
     public function getDataSm(Request $request) {
         // Membuat query untuk tabel training_course_detail
         //dd($request);
         $query = DB::table('d_socialmedia')
         ->join('m_category_sosialmedia', 'm_category_sosialmedia.id', '=', 'd_socialmedia.id_category')
         ->select('d_socialmedia.*','m_category_sosialmedia.nama as nama');
-        
+
         // Menerapkan filter berdasarkan parameter yang tersedia
         if ($request->has('title') && $request->title != '') {
             $query->where('m_category_sosialmedia.nama', 'LIKE', '%' . $request->title . '%');
         }
-       
-      
+
+
         // Mengambil hasil query
         $courses = $query->get();
         // Mengembalikan data dalam format JSON
@@ -80,8 +80,8 @@ class SocialMediaController extends Controller
     public function storeSm(Request $req)
     {
         try {
-            
-            
+
+
                 $listItem = new SocialMediaModel();
                 $listItem->id_category      = $req->idcategory;
                 $listItem->url              = $req->urlsm;
@@ -90,10 +90,10 @@ class SocialMediaController extends Controller
                 $listItem->updated_by = session()->get('id');
                 $listItem->updated_by_ip = $req->ip();
                 $listItem->save();
-                
-            
 
-            
+
+
+
             $response = [
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan'
@@ -124,7 +124,7 @@ class SocialMediaController extends Controller
         $data['title_page'] = 'Social Media | ' . $data['menus']->menu_name;
         $data['content'] = base64_decode($id);
         $data['menu']       = MenuModel::all();
-        
+
         $data['iddtl']=base64_decode($id);
         $data['datasm'] =  SocialMediaModel::where('id',base64_decode($id))->first();
 
@@ -137,8 +137,8 @@ class SocialMediaController extends Controller
     public function updateSm(Request $req)
     {
         try {
-            
-            
+
+
                 $listItem = SocialMediaModel::find($req->iddtl);
                 $listItem->id_category      = $req->idcategory;
                 $listItem->url              = $req->urlsm;
@@ -146,10 +146,10 @@ class SocialMediaController extends Controller
                 $listItem->updated_by = session()->get('id');
                 $listItem->updated_by_ip = $req->ip();
                 $listItem->save();
-                
-            
 
-            
+
+
+
             $response = [
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan'
@@ -169,6 +169,17 @@ class SocialMediaController extends Controller
         $log_app->user_id = session()->get('id');
         $log_app->ip_address = $req->ip();
         $log_app->save();
+        return json_encode($response);
+    }
+
+    public function deleteDataSm ($id)
+    {
+        SocialMediaModel::where('id', $id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus'
+        ];
         return json_encode($response);
     }
 
