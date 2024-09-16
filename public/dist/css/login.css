@@ -1,0 +1,6 @@
+body{
+    background: url("../img/wave.svg");
+    background-repeat: no-repeat; /* Do not repeat the image */
+    width: 100%;
+    background-size: contain;
+}
