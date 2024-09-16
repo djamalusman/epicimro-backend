@@ -27,7 +27,7 @@ class YotubeNewsController extends Controller
         $data['title']      = 'Video | Pages';
         $data['title_page'] = 'Pelatihan / Kursus | ' . $data['menus']->menu_name;
         $data['menu']       = MenuModel::all();
-       
+
         return view('pages.youtubenews', $data);
     }
 
@@ -41,14 +41,14 @@ class YotubeNewsController extends Controller
             WHEN d_testimonials.status = 3 THEN "Non Publish"
             WHEN d_testimonials.status = 4 THEN "Kadaluarsa"
             ELSE "Unknown"
-        END as status_training'),'ifg_menu.menu_name','m_category_testimonials.nama as category') 
+        END as status_training'),'ifg_menu.menu_name','m_category_testimonials.nama as category')
         ->where('d_testimonials.id_category',29) // Pilih kolom yang dibutuhkan
-        ->where('d_testimonials.id_menu',35) 
+        ->where('d_testimonials.id_menu',35)
             ->distinct()
             ->get();
         return response()->json($filters);
     }
-    
+
     public function getDataVideo(Request $request) {
         // Membuat query untuk tabel training_course_detail
 
@@ -58,7 +58,7 @@ class YotubeNewsController extends Controller
         ->select('d_testimonials.*','ifg_menu.menu_name','m_category_testimonials.nama as category')
         ->where('d_testimonials.id_category',29) // Pilih kolom yang dibutuhkan
         ->where('d_testimonials.id_menu',35) ; // Pilih kolom yang dibutuhkan
-        
+
         // Menerapkan filter berdasarkan parameter yang tersedia
         if ($request->has('title') && $request->title != '') {
             $query->where('d_testimonials.nama', 'LIKE', '%' . $request->title . '%');
@@ -66,8 +66,8 @@ class YotubeNewsController extends Controller
         if ($request->has('category') && $request->category != '') {
             $query->where('m_category_testimonials.nama', 'LIKE', '%' . $request->category . '%');
         }
-    
-      
+
+
         // Mengambil hasil query
         $courses = $query->get();
         // Mengembalikan data dalam format JSON
@@ -88,7 +88,7 @@ class YotubeNewsController extends Controller
 
     public function storeVideo(Request $req)
     {
-        
+
         try {
             //dd($req->all());
             $this->validate($req, [
@@ -121,9 +121,9 @@ class YotubeNewsController extends Controller
                         $dataembedvideo->save();
                     }
                 }
-            
 
-            
+
+
             $response = [
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan'
@@ -159,14 +159,14 @@ class YotubeNewsController extends Controller
         ->select('m_category_testimonials.*')->get();
 
         $data['embedvideo']=  TestimonialsDetailModel::where('id_testimoni',base64_decode($id))->get();
-        
+
         $data['databyid'] = DB::table('d_testimonials')
             ->leftJoin('d_testimonials_video', 'd_testimonials_video.id_testimoni', '=', 'd_testimonials.id')
             ->select('d_testimonials.*', 'd_testimonials_video.url')
             ->where('d_testimonials.id', $decodedId)
             ->first();
 
-       
+
         $data['iddtl']=base64_decode($id);
 
         return view('pages.youtubenews_edit', $data);
@@ -175,9 +175,9 @@ class YotubeNewsController extends Controller
 
     public function updateVideo(Request $req)
     {
-        
+
         try {
-            
+
             $this->validate($req, [
                 'category' => 'required',
                 //'menu' => 'required',
@@ -186,7 +186,7 @@ class YotubeNewsController extends Controller
                 //'menu.required' => 'Inputan menu tidak boleh kosong',
             ]);
 
-         
+
 
             TestimonialsDetailModel::where('id_testimoni', $req->iddtl)->delete();
 
@@ -213,7 +213,7 @@ class YotubeNewsController extends Controller
                         $dataembedvideo->save();
                     }
                 }
-                
+
 
             $response = [
                 'status' => 'success',
@@ -248,12 +248,14 @@ class YotubeNewsController extends Controller
         return json_encode($response);
     }
 
+
+
     public function viewPopUpVid($id)
     {
-        
+
         try {
                 $dt_list_item =  TestimonialsDetailModel::where('id_testimoni',$id)->first();
-              
+
                 $output = View::make("components.view-video")
                     ->with("dt_item", $dt_list_item)
                     ->render();
@@ -270,6 +272,18 @@ class YotubeNewsController extends Controller
                 'message' => "Terjadi Kesalahan pada sistem.",
             ];
         }
+        return json_encode($response);
+    }
+
+    public function deleteDataVideo ($id)
+    {
+        TestimonialsModel::where('id', $id)->delete();
+        TestimonialsDetailModel::where('id_testimoni', $id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus'
+        ];
         return json_encode($response);
     }
 }

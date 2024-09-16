@@ -305,14 +305,14 @@
                             <div class="container mt-1">
                                 <div class="row button-container">
                                     <div class="col-4 text-left mb-3">
-                                        <a type="button" style="color:Green" href="/public/get-view-edit-cooperation/${btoa(value.id)}" title="Edit Course">
+                                        <a type="button" style="color:Green;" href="/public/get-view-edit-cooperation/${btoa(value.id)}"  title="Edit Cooperation">
                                             <i class="fa fa-bars"></i>
                                         </a>
                                     </div>
 
                                     <div class="col-4 text-left mb-3">
-                                        <a type="button" href="#" style="color:red" onclick="stopPrompt('${value.id}')" title="Stop Course">
-                                            <i class="fa fa-stop"></i>
+                                        <a type="button" href="#" style="color:red;" onclick="removeCooperation('${value.id}')" title="Delete Cooperation">
+                                            <i class="fa fa-trash"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -378,8 +378,8 @@
             });
         }
 
-        function stopPrompt(id) {
-            var url = "{{ route('stop-data-job',':id') }}";
+        function removeCooperation(id) {
+            var url = "{{ route('remove-cooperation',':id') }}";
             url = url.replace(":id", id);
 
             const Toast = Swal.mixin({
@@ -391,9 +391,9 @@
             });
 
             Swal.fire({
-                title: "Stop data?",
+                title: "Hapus data?",
                 showCancelButton: true,
-                confirmButtonText: "Stop",
+                confirmButtonText: "Delete",
                 confirmButtonColor: "#d33",
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */

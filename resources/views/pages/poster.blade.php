@@ -57,7 +57,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                
+
                 <div class="container-fluid mt-4">
                     <div class="row">
                         <div class="col-12">
@@ -66,15 +66,15 @@
                                     <h3 class="card-title">Side List {{explode('|',$title_page)[1]}}</h3>
                                 </div>
                                 <div class="card-body">
-                                    
+
                                     <div class="row">
                                         <div class="col-0">
-                                            
+
                                               <a type="button" href="{{ route('get-view-store-poster',  ['id' => base64_encode($menus->id)])}}" class="btn btn-primary"><i class="fa fa-plus-circle" aria-hidden="true"></i>
                                               </a>
                                         </div>
                                         <div class="col-1">
-                                            
+
                                             <a type="button" id="filterButton" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i></a>
                                         </div>
                                     </div>
@@ -88,18 +88,18 @@
                                                     <th>Category</th>
                                                     <th>Tanggal</th>
                                                     <th>Image</th>
-                                                    <th>Status</th> 
+                                                    <th>Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
-                                         
+
                                             <tbody>
                                                 <!-- Data akan diisi melalui AJAX -->
                                             </tbody>
                                         </table>
-                                        
+
                                     </div>
-                                 
+
                                 </div>
                             </div>
                         </div>
@@ -123,8 +123,8 @@
                                 <!-- Options will be appended here -->
                             </select>
                         </div>
-                        
-                        
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -174,13 +174,13 @@ function escapeHtml(unsafe) {
 
 function formatDateRange(postedDateStr, closeDateStr) {
     if (!postedDateStr || !closeDateStr) return '';
-    
+
     var postedParts = postedDateStr.split(' ')[0].split('-');
     var closeParts = closeDateStr.split(' ')[0].split('-');
-    
+
     var startDate = new Date(postedParts[0], postedParts[1] - 1, postedParts[2]);
     var endDate = new Date(closeParts[0], closeParts[1] - 1, closeParts[2]);
-    
+
     var startDay = startDate.getDate();
     var endDay = endDate.getDate();
     var month = startDate.toLocaleString('default', { month: 'long' });
@@ -219,11 +219,11 @@ function formatDate(dateStr) {
         $('#filterModal').on('hidden.bs.modal', function () {
             resetSelectOptions();
         });
-        
+
         // Function to apply filter and reset modal
         function applyFilterAndReset() {
             var title = $('#titleSelect').val();
-            
+
 
             // Load table data based on selected filter
             loadTableData({
@@ -237,7 +237,7 @@ function formatDate(dateStr) {
         // Function to reset select options to "All"
         function resetSelectOptions() {
             $('#titleSelect').val('');
-            
+
         }
 
         // Function to populate dropdown list
@@ -247,14 +247,14 @@ function formatDate(dateStr) {
                 type: 'GET',
                 success: function(data) {
                     var titleSelect = $('#titleSelect');
-                    
+
 
                     titleSelect.empty(); // Clear existing items
-                    
+
 
                     // Append "All" option to the select elements
                     titleSelect.append('<option value="">All</option>');
-                
+
 
                     // Using Sets to store unique items
                     var uniqueTitle = new Set();
@@ -272,7 +272,7 @@ function formatDate(dateStr) {
 
                     // Append unique items for each attribute to the select elements
                     appendUniqueItems(uniqueTitle, titleSelect);
-                    
+
                 },
                 error: function() {
                     console.log("Error fetching data.");
@@ -291,7 +291,7 @@ function formatDate(dateStr) {
                     table.clear().draw();
 
                     $.each(data, function(key, value) {
-                        var statusBadge = 
+                        var statusBadge =
                                 value.status == '1' ? '<span class="badge badge-primary">Publish</span>' :
                                 value.status == '2' ? '<span class="badge badge-warning">Pending</span>' :
                                 value.status == '3' ? '<span class="badge badge-secondary">Non Publish</span>' :
@@ -308,15 +308,15 @@ function formatDate(dateStr) {
                                 <div class="container mt-0">
                                     <div class="row">
                                         <div class="ml-auto d-flex">
-                                            
+
                                             <div class="col text-right mb-3">
-                                                <a type="button" style="color:Green" href="/public/edit-poster/${btoa(value.id)}/${btoa(value.id_category)}" title="Edit Course">
+                                                <a type="button" style="color:Green" href="/public/edit-poster/${btoa(value.id)}/${btoa(value.id_category)}" title="Edit Poster">
                                                     <i class="fa fa-bars"></i>
                                                 </a>
                                             </div>
                                             <div class="col text-right mb-3">
-                                                <a type="button" href="#" style="color:red" onclick="stopPrompt('${value.id}')" title="Delete">
-                                                    <i class="fa fa-stop"></i>
+                                                <a type="button" href="#" style="color:red" onclick="removePoster('${value.id}')" title="Delete Poster">
+                                                    <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -359,7 +359,7 @@ function formatDate(dateStr) {
         document.getElementById('side_list1').value = selectedValue;
         document.getElementById('side_list_en1').value = selectedValue;
     }
- 
+
     function parsingDataToModal(id) {
         const Toast = Swal.mixin({
             toast: true,
@@ -397,8 +397,8 @@ function formatDate(dateStr) {
         });
     }
 
-    function stopPrompt(id) {
-        var url = "{{ route('stop-data-course',':id') }}";
+    function removePoster(id) {
+        var url = "{{ route('delete-data-poster',':id') }}";
         url = url.replace(":id", id);
 
         const Toast = Swal.mixin({
@@ -455,6 +455,6 @@ function formatDate(dateStr) {
             }
         });
     }
-    
+
 </script>
 @endsection

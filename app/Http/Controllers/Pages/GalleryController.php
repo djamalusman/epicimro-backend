@@ -40,23 +40,23 @@ class GalleryController extends Controller
             WHEN d_gallery.status = 3 THEN "Non Publish"
             WHEN d_gallery.status = 4 THEN "Kadaluarsa"
             ELSE "Unknown"
-        END as status_training'),'ifg_menu.menu_name','m_category_testimonials.nama as category') 
+        END as status_training'),'ifg_menu.menu_name','m_category_testimonials.nama as category')
         ->where('d_gallery.id_category',31)
             ->distinct()
             ->get();
-            
+
         return response()->json($filters);
     }
-    
+
     public function getDataGallery(Request $request) {
         // Membuat query untuk tabel training_course_detail
 
         $query = DB::table('d_gallery')
         ->join('ifg_menu', 'ifg_menu.id', '=', 'd_gallery.id_menu')
         ->join('m_category_testimonials', 'm_category_testimonials.id', '=', 'd_gallery.id_category')
-        ->select('d_gallery.*','ifg_menu.menu_name','m_category_testimonials.nama as category') 
+        ->select('d_gallery.*','ifg_menu.menu_name','m_category_testimonials.nama as category')
         ->where('d_gallery.id_category',31); // Pilih kolom yang dibutuhkan
-        
+
         // Menerapkan filter berdasarkan parameter yang tersedia
         if ($request->has('title') && $request->title != '') {
             $query->where('d_gallery.nama', 'LIKE', '%' . $request->title . '%');
@@ -67,9 +67,9 @@ class GalleryController extends Controller
         if ($request->has('category') && $request->category != '') {
             $query->where('m_category_testimonials.nama', 'LIKE', '%' . $request->category . '%');
         }
-    
-    
-      
+
+
+
         // Mengambil hasil query
         $courses = $query->get();
         // Mengembalikan data dalam format JSON
@@ -118,8 +118,8 @@ class GalleryController extends Controller
         try {
 
             //dd($req->all());
-        
-        
+
+
                 $listItem = new GalleryModel();
                 $listItem->nama                         = $req->nama_gallery;
                 $listItem->id_category                  = $req->category;
@@ -129,43 +129,43 @@ class GalleryController extends Controller
                 $listItem->updated_by                   = session()->get('id');
                 $listItem->updated_by_ip                = $req->ip();
                 $listItem->save();
-    
-                
-    
+
+
+
                 if (!is_null($req->photo)) {
                     for ($index = 0; $index < count($req->photo); $index++) {
                         $filePhoto = null;
-                
+
                         if (isset($req->photo[$index])) {
                             $file = $req->file('photo')[$index];
                             $ext = $file->extension();
                             $filePhoto = uniqid() . '.' . $file->getClientOriginalExtension();
-                
+
                             $manager = new ImageManager();
                             $img = $manager->make($file->getPathname());
-                
+
                             if ($ext == 'png' || $ext == 'PNG') {
                                 $filePhoto = uniqid() . '.webp';
                             }
                             $img->save(public_path('storage') . '/' . $filePhoto, 80);
-                
+
                             if (env('PLATFORM_NAME') !== 'windows') {
                                 // SFTP
                                 Storage::disk('sftp')->put('/' . $filePhoto, $img->encode());
                             } else {
                                 Storage::disk('windows_uploads')->put('/' . $filePhoto, $img->encode());
                             }
-                
+
                             // Cek apakah file dengan nama yang sama sudah ada di database
                             $existingFile = GalleryDetailModel::where('id_gallery', $listItem->id)
                                 ->where('fileold', $file->getClientOriginalName())
                                 ->first();
-                
+
                             if ($existingFile) {
                                 // Jika file sudah ada, abaikan insert atau lakukan update jika diperlukan
                                 continue; // Lewati iterasi ini jika sudah ada file yang sama
                             }
-                
+
                             // Insert data baru ke dalam database
                             $datapenulis = new GalleryDetailModel();
                             $datapenulis->id_gallery = $listItem->id;
@@ -179,12 +179,12 @@ class GalleryController extends Controller
                         }
                     }
                 }
-                
-         
 
-           
 
-            
+
+
+
+
             $response = [
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan'
@@ -222,16 +222,16 @@ class GalleryController extends Controller
         if (base64_decode($id_category) == 31) {
             return view('pages.gallery_edit', $data);
         }
-       
+
     }
 
     public function galleryUpdate(Request $req)
     {
-       
+
         try {
-            
- 
- 
+
+
+
             $listItem =  GalleryModel::find($req->iddtl);
             $listItem->nama                 = $req->nama;
             $listItem->id_menu              = 1;
@@ -240,43 +240,43 @@ class GalleryController extends Controller
             $listItem->updated_by                   = session()->get('id');
             $listItem->updated_by_ip                = $req->ip();
             $listItem->save();
- 
-            
+
+
 
              if (!is_null($req->photo)) {
                 for ($index = 0; $index < count($req->photo); $index++) {
                     $filePhoto = null;
-            
+
                     if (isset($req->photo[$index])) {
                         $file = $req->file('photo')[$index];
                         $ext = $file->extension();
                         $filePhoto = uniqid() . '.' . $file->getClientOriginalExtension();
-            
+
                         $manager = new ImageManager();
                         $img = $manager->make($file->getPathname());
-            
+
                         if ($ext == 'png' || $ext == 'PNG') {
                             $filePhoto = uniqid() . '.webp';
                         }
                         $img->save(public_path('storage') . '/' . $filePhoto, 80);
-            
+
                         if (env('PLATFORM_NAME') !== 'windows') {
                             // SFTP
                             Storage::disk('sftp')->put('/' . $filePhoto, $img->encode());
                         } else {
                             Storage::disk('windows_uploads')->put('/' . $filePhoto, $img->encode());
                         }
-            
+
                         // Cek apakah file dengan nama yang sama sudah ada di database
                         $existingFile = GalleryDetailModel::where('id_gallery', $listItem->id)
                             ->where('fileold', $file->getClientOriginalName())
                             ->first();
-            
+
                         if ($existingFile) {
                             // Jika file sudah ada, abaikan insert atau lakukan update jika diperlukan
                             continue; // Lewati iterasi ini jika sudah ada file yang sama
                         }
-            
+
                         // Insert data baru ke dalam database
                         $datapenulis = new GalleryDetailModel();
                         $datapenulis->id_gallery = $listItem->id;
@@ -290,7 +290,7 @@ class GalleryController extends Controller
                     }
                 }
             }
- 
+
              $response = [
                  'status' => 'success',
                  'message' => 'Data berhasil disimpan'
@@ -302,11 +302,11 @@ class GalleryController extends Controller
              ];
          }
          $status = $req->status;
- 
+
          $statusText = ($status == 1) ? 'publish' :
                (($status == 2) ? 'pending' :
                (($status == 3) ? 'preview' : 'unknown'));
- 
+
          $log_app = new LogApp();
          $log_app->method = $req->method();
          $log_app->request = "Create Traning Course '{$statusText}'";
@@ -321,12 +321,26 @@ class GalleryController extends Controller
 
     public function removePhotoGalerry ($id)
     {
-        
+
         GalleryDetailModel::where('id', $id)->delete();
 
         $response = [
             'status' => 'success',
             'message' => 'Data berhasil disimpan'
+        ];
+        return json_encode($response);
+    }
+
+
+    public function deleteDataGalerry ($id)
+    {
+
+        GalleryModel::where('id', $id)->delete();
+        GalleryDetailModel::where('id_gallery', $id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus'
         ];
         return json_encode($response);
     }
