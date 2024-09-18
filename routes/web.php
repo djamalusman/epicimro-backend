@@ -341,8 +341,8 @@ use Illuminate\Support\Facades\Route;
             Route::post('/update-news-update', [NewsUpdateController::class, 'updateNewsUpdate'])
                 ->name('update-news-update');
 
-            // Route::get('/delete-master-job-cavancy-detail/{id}', [JobVacancyController::class, 'deleteJobVacancyDetail'])
-            //     ->name('delete-master-job-cavancy-detail');
+            Route::get('/delete-news/{id}', [NewsUpdateController::class, 'deleteNews'])
+                ->name('delete-news');
 
 
 

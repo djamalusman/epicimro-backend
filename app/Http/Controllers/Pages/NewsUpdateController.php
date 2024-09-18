@@ -50,19 +50,19 @@ class NewsUpdateController extends Controller
     public function getDropdownNews() {
         $filters = DB::table('news_detail')
             ->join('m_news', 'm_news.id', '=', 'news_detail.id_m_news')
-            ->select('news_detail.*', 'm_news.nama as category') 
+            ->select('news_detail.*', 'm_news.nama as category')
             ->distinct()
             ->get();
         return response()->json($filters);
     }
-    
+
     public function getDataNewsFilter(Request $request) {
         // Membuat query untuk tabel training_course_detail
 
         $query = DB::table('news_detail')
         ->join('m_news', 'm_news.id', '=', 'news_detail.id_m_news')
         ->select('news_detail.*', 'm_news.nama as category') ; // Pilih kolom yang dibutuhkan
-        
+
         // Menerapkan filter berdasarkan parameter yang tersedia
         if ($request->has('title') && $request->title != '') {
             $query->where('news_detail.title', 'LIKE', '%' . $request->title . '%');
@@ -70,9 +70,9 @@ class NewsUpdateController extends Controller
         if ($request->category != '') {
             $query->where('m_news.nama', 'LIKE', '%' . $request->category . '%');
         }
-    
-    
-      
+
+
+
         // Mengambil hasil query
         $courses = $query->get();
         // Mengembalikan data dalam format JSON
@@ -89,14 +89,14 @@ class NewsUpdateController extends Controller
         $data['menu']       = MenuModel::all();
 
         $data['liscategory'] = NewsUpdateModel::all();
-        
+
         return view('pages.newsupdate_store', $data);
     }
 
 
     public function storeNewsUpdate(Request $req)
     {
-        
+
         try {
             if (!is_null($req->file('photo'))) {
                 $ext                    =  $req->file('photo')->extension();
@@ -134,21 +134,21 @@ class NewsUpdateController extends Controller
             // if (!is_null($req->item_file)) {
             //     for ($index = 0; $index < count($req->item_file); $index++) {
             //         $filenamepenulis = null;
-            
+
             //         if (isset($req->item_file[$index])) {
             //             $file = $req->file('item_file')[$index];
             //             $ext = $file->extension();
             //             $filenamepenulis = uniqid() . '.' . $file->getClientOriginalExtension();
-            
-                        
+
+
             //                 $manager = new ImageManager();
             //                 $img = $manager->make($file->getPathname());
-            
+
             //                 if ($ext == 'png' || $ext == 'PNG') {
             //                     $filenamepenulis = uniqid() . '.webp';
             //                 }
             //                 $img->save(public_path('storage') . '/'  . $filenamepenulis, 80);
-            
+
             //                 if (env('PLATFORM_NAME') !== 'windows') {
             //                     // SFTP
             //                     Storage::disk('sftp')->put('/' . $filenamepenulis, $img->encode());
@@ -156,7 +156,7 @@ class NewsUpdateController extends Controller
             //                     Storage::disk('windows_uploads')->put('/' . $filenamepenulis, $img->encode());
             //                 }
             //             }
-                       
+
             //             $datapenulis = new NewsFilesModel();
             //             $datapenulis->id_news_dtl = $listItem->id;
             //             $datapenulis->nama = $filenamepenulis;
@@ -164,7 +164,7 @@ class NewsUpdateController extends Controller
             //             $datapenulis->updated_by = session()->get('id');
             //             $datapenulis->updated_by_ip = $req->ip();
             //             $datapenulis->save();
-                   
+
             //     }
             // }
             $response = [
@@ -197,9 +197,9 @@ class NewsUpdateController extends Controller
         $data['title_page'] = 'Pelatihan / Kursus | ' . $data['menus']->menu_name;
         $data['content'] = base64_decode($id);
         $data['menu']       = MenuModel::all();
-       
+
         $data['liscategory'] = NewsUpdateModel::all();
-        
+
         $data['databyid'] = DB::table('news_detail')
         ->join('m_news', 'm_news.id', '=', 'news_detail.id_m_news')
         ->select('news_detail.*', 'm_news.nama as category') // Pilih kolom yang dibutuhkan
@@ -209,10 +209,10 @@ class NewsUpdateController extends Controller
             ->join('m_news_file', 'm_news_file.id_news_dtl', '=', 'news_detail.id') // Bergabung dengan tabel tipe_master
             ->select('m_news_file.nama as namaImage' )
             ->where('m_news_file.id_news_dtl',base64_decode($id))->get();
-        
+
         $dt_list_item =  NewsUpdateDetailModel::where('id',base64_decode($id))->first();
         $data['implementation_date']  = Carbon::parse($dt_list_item->implementation_date)->format('d/m/Y');
-    
+
         $data['iddtl']=base64_decode($id);
 
         return view('pages.newsupdate_edit', $data);
@@ -220,7 +220,7 @@ class NewsUpdateController extends Controller
 
     public function updateNewsUpdate(Request $req)
     {
-       
+
         try {
             if (!is_null($req->file('photo'))) {
                 $ext                    =  $req->file('photo')->extension();
@@ -253,29 +253,29 @@ class NewsUpdateController extends Controller
             $listItem->insert_by = session()->get('id');
             $listItem->updated_by = session()->get('id');
             $listItem->updated_by_ip = $req->ip();
-           
-           
+
+
 
             $listItem->save();
 
             // if (!is_null($req->item_file)) {
             //     for ($index = 0; $index < count($req->item_file); $index++) {
             //         $filenamepenulis = null;
-            
+
             //         if (isset($req->item_file[$index])) {
             //             $file = $req->file('item_file')[$index];
             //             $ext = $file->extension();
             //             $filenamepenulis = uniqid() . '.' . $file->getClientOriginalExtension();
-            
-                        
+
+
             //                 $manager = new ImageManager();
             //                 $img = $manager->make($file->getPathname());
-            
+
             //                 if ($ext == 'png' || $ext == 'PNG') {
             //                     $filenamepenulis = uniqid() . '.webp';
             //                 }
             //                 $img->save(public_path('storage') . '/'  . $filenamepenulis, 80);
-            
+
             //                 if (env('PLATFORM_NAME') !== 'windows') {
             //                     // SFTP
             //                     Storage::disk('sftp')->put('/' . $filenamepenulis, $img->encode());
@@ -291,7 +291,7 @@ class NewsUpdateController extends Controller
             //             $listItem->updated_by = session()->get('id');
             //             $listItem->updated_by_ip = $req->ip();
             //             $listItem->save();
-                   
+
             //     }
             // }
 
@@ -320,12 +320,12 @@ class NewsUpdateController extends Controller
 
     public function editNewsUpdateDetail($id)
     {
-       
 
-        try 
+
+        try
         {
             $dt_list_item =  NewsUpdateDetailModel::find($id);
-          
+
             $jenisnews      =  DB::table('news')
             ->leftjoin('ifg_master_tipe', 'ifg_master_tipe.id', '=', 'news.id_master_tipe')
             ->leftjoin('news_type', 'news_type.id_master_tipe', '=', 'ifg_master_tipe.id')
@@ -356,5 +356,16 @@ class NewsUpdateController extends Controller
         return json_encode($response);
     }
 
-  
+    public function deleteNews ($id)
+    {
+
+        NewsUpdateDetailModel::where('id', $id)->delete();
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus'
+        ];
+        return json_encode($response);
+    }
+
 }

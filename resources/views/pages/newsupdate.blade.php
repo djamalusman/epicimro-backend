@@ -57,7 +57,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                
+
                 <div class="container-fluid mt-4">
                     <div class="row">
                         <div class="col-12">
@@ -66,15 +66,15 @@
                                     <h3 class="card-title">Side List {{explode('|',$title_page)[1]}}</h3>
                                 </div>
                                 <div class="card-body">
-                                    
+
                                     <div class="row">
                                         <div class="col-0">
-                                            
+
                                               <a type="button" href="{{ route('get-view-store-news',  ['id' => base64_encode($menus->id)])}}" class="btn btn-primary"><i class="fa fa-plus-circle" aria-hidden="true"></i>
                                               </a>
                                         </div>
                                         <div class="col-1">
-                                            
+
                                             <a type="button" id="filterButton" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i></a>
                                         </div>
                                     </div>
@@ -86,19 +86,19 @@
                                                     <th>No</th>
                                                     <th>Nama Berita</th>
                                                     <th>Category</th>
-                                                    <th>Tanggal</th> 
-                                                    <th>Status</th> 
+                                                    <th>Tanggal</th>
+                                                    <th>Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
-                                         
+
                                             <tbody>
                                                 <!-- Data akan diisi melalui AJAX -->
                                             </tbody>
                                         </table>
-                                        
+
                                     </div>
-                                 
+
                                 </div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                                 <!-- Options will be appended here -->
                             </select>
                         </div>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -162,13 +162,13 @@ function escapeHtml(unsafe) {
 
 function formatDateRange(postedDateStr, closeDateStr) {
     if (!postedDateStr || !closeDateStr) return '';
-    
+
     var postedParts = postedDateStr.split(' ')[0].split('-');
     var closeParts = closeDateStr.split(' ')[0].split('-');
-    
+
     var startDate = new Date(postedParts[0], postedParts[1] - 1, postedParts[2]);
     var endDate = new Date(closeParts[0], closeParts[1] - 1, closeParts[2]);
-    
+
     var startDay = startDate.getDate();
     var endDay = endDate.getDate();
     var month = startDate.toLocaleString('default', { month: 'long' });
@@ -207,7 +207,7 @@ $(document).ready(function() {
     $('#filterModal').on('hidden.bs.modal', function () {
         resetSelectOptions();
     });
-    
+
     // Function to apply filter and reset modal
     function applyFilterAndReset() {
         var title = $('#titleSelect').val();
@@ -282,7 +282,7 @@ $(document).ready(function() {
                 table.clear().draw();
 
                 $.each(data, function(key, value) {
-                    var statusBadge = 
+                    var statusBadge =
                             value.status == '1' ? '<span class="badge badge-primary">Publish</span>' :
                             value.status == '2' ? '<span class="badge badge-warning">Pending</span>' :
                             value.status == '3' ? '<span class="badge badge-secondary">Non Publish</span>' :
@@ -298,13 +298,13 @@ $(document).ready(function() {
                                 <div class="row">
                                     <div class="ml-auto d-flex">
                                         <div class="col text-right mb-3">
-                                            <a type="button" style="color:Green" href="/public/edit-newsupdate/${btoa(value.id)}" title="Edit Course">
+                                            <a type="button" style="color:Green" href="/public/edit-newsupdate/${btoa(value.id)}" title="Edit News">
                                                 <i class="fa fa-bars"></i>
                                             </a>
                                         </div>
                                         <div class="col text-right mb-3">
-                                            <a type="button" href="#" style="color:red" onclick="stopPrompt('${value.id}')" title="Stop Course">
-                                                <i class="fa fa-stop"></i>
+                                            <a type="button" href="#" style="color:red" onclick="removeNews('${value.id}')" title="Delete News">
+                                                <i class="fa fa-trash"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -346,65 +346,65 @@ $(document).ready(function() {
         document.getElementById('side_list1').value = selectedValue;
         document.getElementById('side_list_en1').value = selectedValue;
     }
- 
 
-    // function deletePrompt(id) {
-    //     var url = "{{ route('delete-master-job-cavancy',':id') }}";
-    //     url = url.replace(":id", id);
 
-    //     const Toast = Swal.mixin({
-    //         toast: true,
-    //         position: "top-end",
-    //         showConfirmButton: false,
-    //         timer: 1500,
-    //         timerProgressBar: true,
-    //     });
+    function removeNews(id) {
+        var url = "{{ route('delete-news',':id') }}";
+        url = url.replace(":id", id);
 
-    //     Swal.fire({
-    //         title: "Delete data?",
-    //         showCancelButton: true,
-    //         confirmButtonText: "Delete",
-    //         confirmButtonColor: "#d33",
-    //     }).then((result) => {
-    //         /* Read more about isConfirmed, isDenied below */
-    //         if (result.isConfirmed) {
-    //             $.ajaxSetup({
-    //                 headers: {
-    //                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
-    //                 }
-    //             });
-    //             $.ajax({
-    //                 url: url,
-    //                 type: "GET",
-    //                 processData: false,
-    //                 contentType: false,
-    //                 success: function(data) {
-    //                     data = JSON.parse(data);
-    //                     if (data["status"] == "success") {
-    //                         Toast.fire({
-    //                             icon: "success",
-    //                             title: data["message"],
-    //                         }).then((result) => {
-    //                             if (result.dismiss === Swal.DismissReason.timer) {
-    //                                 location.reload();
-    //                             }
-    //                         });
-    //                     } else {
-    //                         Toast.fire({
-    //                             icon: "error",
-    //                             title: data["message"],
-    //                         });
-    //                     }
-    //                 },
-    //                 error: function(reject) {
-    //                     Toast.fire({
-    //                         icon: "error",
-    //                         title: "Something went wrong",
-    //                     });
-    //                 },
-    //             });
-    //         }
-    //     });
-    // }
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+        });
+
+        Swal.fire({
+            title: "Hapus data?",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            confirmButtonColor: "#d33",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        data = JSON.parse(data);
+                        if (data["status"] == "success") {
+                            Toast.fire({
+                                icon: "success",
+                                title: data["message"],
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Toast.fire({
+                                icon: "error",
+                                title: data["message"],
+                            });
+                        }
+                    },
+                    error: function(reject) {
+                        Toast.fire({
+                            icon: "error",
+                            title: "Something went wrong",
+                        });
+                    },
+                });
+            }
+        });
+    }
 </script>
 @endsection
