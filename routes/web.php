@@ -28,8 +28,9 @@ use App\Http\Controllers\Pages\YoutubeController;
 use App\Http\Controllers\Pages\SocialMediaController;
 use App\Http\Controllers\Pages\HomeController;
 use App\Http\Controllers\Pages\BannerController;
+use App\Http\Controllers\Pages\SertifikatController;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Response;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -330,10 +331,8 @@ use Illuminate\Support\Facades\Route;
             Route::get('/get-view-store-news/{id}', [NewsUpdateController::class, 'getViewStoreNews'])
                 ->name('get-view-store-news');
 
-                Route::post('/store-news-update', [NewsUpdateController::class, 'storeNewsUpdate'])
+            Route::post('/store-news-update', [NewsUpdateController::class, 'storeNewsUpdate'])
                 ->name('store-news-update');
-
-
 
             Route::get('/edit-newsupdate/{id}', [NewsUpdateController::class, 'editNewsUpdate'])
                 ->name('edit-newsupdate');
@@ -596,5 +595,49 @@ use Illuminate\Support\Facades\Route;
         ->name('store-home');
 
     // end master
+
+    // sertifikat
+
+            Route::get('/sertifikat/{id}', [SertifikatController::class, 'index'])
+                ->name('sertifikat');
+
+            Route::get('/get-data-sertifikat', [SertifikatController::class, 'getDataSertifikat'])
+                ->name('get-data-sertifikat');
+
+            Route::get('/get-filters-sertifikat', [SertifikatController::class, 'getDropdown'])
+                ->name('get-filters-sertifikat');
+
+
+            Route::get('/get-view-store-sertifikat/{id}', [SertifikatController::class, 'getViewStoreSertifikat'])
+                ->name('get-view-store-sertifikat');
+
+            Route::get('/get-view-excel-sertifikat/{id}', [SertifikatController::class, 'getViewExcelSertifikat'])
+                ->name('get-view-excel-sertifikat');
+
+            Route::post('/store-sertifikat', [SertifikatController::class, 'storeSertifikat'])
+                ->name('store-sertifikat');
+
+            Route::post('/store-sertifikat-excel', [SertifikatController::class, 'import'])
+                ->name('store-sertifikat-excel');
+
+            Route::get('/edit-sertifikat/{id}', [SertifikatController::class, 'editSertifikat'])
+                ->name('edit-sertifikat');
+
+            Route::post('/update-sertifikat', [SertifikatController::class, 'updateSertifikat'])
+                ->name('update-sertifikat');
+
+            Route::get('/delete-sertifikat/{id}', [SertifikatController::class, 'deleteSertifikat'])
+                ->name('delete-sertifikat');
+
+            Route::get('/download-excel', function () {
+                    $filePath = storage_path('app\public\yourfile.xlsx'); // Path ke file Excel
+                    return response()->download($filePath);
+                })->name('download-excel');
+
+            // Route::put('/update-news-update-detail', [NewsUpdateController::class, 'updateNewsUpdateDetail'])
+            //     ->name('update-news-update-detail');
+
+
+    //end sertifikat
 
 });
