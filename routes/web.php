@@ -640,4 +640,13 @@ use Illuminate\Support\Facades\Response;
 
     //end sertifikat
 
+    // registrasi
+
+        Route::get('masterregistrasion/{id}', [HomeController::class, 'registrasiindex'])->name('masterregistrasion');
+
+        Route::post('/store-home-registrasion', [HomeController::class, 'storeHomeregistrasion'])
+        ->name('store-home-registrasion');
+
+    // end registrasi
+
 });
