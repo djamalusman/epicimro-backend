@@ -311,18 +311,20 @@
                     errorMessage = 'No Urut harus berupa angka dan maksimal 6 digit.';
                 }
                 break;
-            case 'kode_category_training_srt':
-                if (!/^[A-Za-z]{1,3}$/.test(value)) {
-                    isValid = false;
-                    errorMessage = 'Kode Category Training harus berupa huruf dan maksimal 3 karakter.';
-                }
-                break;
-            case 'kode_srt':
-                if (!/^[A-Za-z]{1,6}$/.test(value)) {
-                    isValid = false;
-                    errorMessage = 'Kode Sertifikasi harus berupa huruf dan maksimal 6 karakter.';
-                }
-                break;
+                case 'kode_category_training_srt':
+                    if (!/^[A-Za-z0-9]{1,3}$/.test(value)) {
+                        isValid = false;
+                        errorMessage = 'Kode Category Training harus berisi huruf atau angka dan maksimal 3 karakter.';
+                    }
+                    break;
+                case 'kode_srt':
+                    if (!/^[A-Za-z0-9]{1,6}$/.test(value)) {
+                        isValid = false;
+                        errorMessage = 'Kode Sertifikasi harus berisi huruf atau angka dan maksimal 6 karakter.';
+                    }
+                    break;
+
+
 
             default:
                 break;
@@ -586,22 +588,32 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(response) {
+                success: function(data) {
                     hideLoading(); // Hide loading indicator
-                    $('#successModal').modal('show');
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data["status"] == "success") {
+                        $('#successModal').modal('show');
 
-                    setTimeout(function() {
-                        $('#successModal').modal('hide');
-                        location.reload();
-                    }, 2000);
+                        setTimeout(function() {
+                            $('#successModal').modal('hide');
+                            location.reload();
+                        }, 2000);
 
-                    $('#previewModal').modal('hide');
-                    $('#training-form')[0].reset();
+                        $('#previewModal').modal('hide');
+                        $('#training-form')[0].reset();
+                    } else {
+                        // Jika status adalah 'failed', tampilkan pesan error
+                        var errorMessage = 'Terjadi kesalahan. Nomor Sertifikat sudah ada.';
+                        $('#error-message').text(errorMessage); // Mengambil pesan dari respons
+                        $('#errorModal').modal('show'); // Tampilkan modal error
+                    }
                 },
                 error: function(xhr, status, error) {
                     hideLoading(); // Hide loading indicator
+                    console.log(error);
                     var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Terjadi kesalahan. Silakan coba lagi.';
-                    $('#error-message').text('Terjadi kesalahan. Silakan coba lagi');
+                    $('#error-message').text(errorMessage);
                     $('#errorModal').modal('show');
 
                     // setTimeout(function() {

@@ -106,8 +106,12 @@ class SertifikatController extends Controller
             $req->jadwal_mulai_bulan,
             $req->jadwal_mulai_tanggal
         )->toDateString();
+        $nosertifikat=$req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
+        $existingRecord = SertifikatModel::where('no_sertifikat', $nosertifikat)->first();
 
-        try {
+        if ($existingRecord == null  ) {
+
+            try {
                 $listItem = new SertifikatModel();
                 $listItem->nama_peserta                 = $req->participants_name;
                 $listItem->email                        = $req->email;
@@ -123,28 +127,38 @@ class SertifikatController extends Controller
                 $listItem->status                       = $req->status;
                 $listItem->insert_by                    = session()->get('id');
                 $listItem->updated_by                   = session()->get('id');
-                $listItem->updated_by_ip                = $req->ip();
+
                 $listItem->save();
 
-            $response = [
-                'status' => 'success',
-                'message' => 'Data berhasil disimpan'
-            ];
-        } catch (ModelNotFoundException $e) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Data berhasil disimpan'
+                ];
+            }
+            catch (ModelNotFoundException $e) {
+                $response = [
+                    'status' => 'failed',
+                    'message' => "Terjadi Kesalahan pada sistem : " . $e,
+                ];
+            }
+
+        }
+        else {
             $response = [
                 'status' => 'failed',
-                'message' => "Terjadi Kesalahan pada sistem : " . $e,
+                'message' => 'Nomor Sertifikat sudah ada'
             ];
         }
 
-        $log_app = new LogApp();
-        $log_app->method = $req->method();
-        $log_app->request = "Create Traning Course";
-        $log_app->response =  json_encode($response);
-        $log_app->pages = 'Traning';
-        $log_app->user_id = session()->get('id');
-        $log_app->ip_address = $req->ip();
-        $log_app->save();
+        //dd($response);
+        // $log_app = new LogApp();
+        // $log_app->method = $req->method();
+        // $log_app->request = "Create Traning Course";
+        // $log_app->response =  json_encode($response);
+        // $log_app->pages = 'Traning';
+        // $log_app->user_id = session()->get('id');
+        // $log_app->ip_address = $req->ip();
+        // $log_app->save();
         return json_encode($response);
     }
 
@@ -152,7 +166,7 @@ class SertifikatController extends Controller
     public function editSertifikat($id)
     {
         //dd(base64_decode($id));
-        $data['menus'] = MenuModel::find(15);
+        $data['menus'] = MenuModel::find(44);
         $data['title']      = 'Traning Kerja | Pages';
         $data['title_page'] = 'Pelatihan / Kursus | ' . $data['menus']->menu_name;
         $data['content'] = base64_decode($id);
@@ -178,45 +192,93 @@ class SertifikatController extends Controller
             $req->jadwal_mulai_bulan,
             $req->jadwal_mulai_tanggal
         )->toDateString();
+        $nosertifikat=$req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
 
-        try {
-                $listItem = SertifikatModel::find($req->iddtl);
-                $listItem->nama_peserta                 = $req->participants_name;
-                $listItem->email                        = $req->email;
-                $listItem->nama_training                = $req->nama_training;
-                $listItem->tanggal_training             = $tanggal_training;
-                $listItem->no_urut_srt                  = $req->no_urut_srt;
-                $listItem->kode_category_training_srt   = $req->kode_category_training_srt;
-                $listItem->kode_srt                     = $req->kode_srt;
-                $listItem->tahun_training_srt           = $req->tahun_training_srt;
+        if ($nosertifikat == $req->nosertifikat) {
+            # code...
 
-                $listItem->no_sertifikat                = $req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
+            try {
+                    $listItem = SertifikatModel::find($req->iddtl);
+                    $listItem->nama_peserta                 = $req->participants_name;
+                    $listItem->email                        = $req->email;
+                    $listItem->nama_training                = $req->nama_training;
+                    $listItem->tanggal_training             = $tanggal_training;
+                    $listItem->no_urut_srt                  = $req->no_urut_srt;
+                    $listItem->kode_category_training_srt   = $req->kode_category_training_srt;
+                    $listItem->kode_srt                     = $req->kode_srt;
+                    $listItem->tahun_training_srt           = $req->tahun_training_srt;
 
-                $listItem->status                       = $req->status;
-                $listItem->insert_by                    = session()->get('id');
-                $listItem->updated_by                   = session()->get('id');
-                $listItem->updated_by_ip                = $req->ip();
-                $listItem->save();
+                    $listItem->no_sertifikat                = $req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
 
-            $response = [
-                'status' => 'success',
-                'message' => 'Data berhasil disimpan'
-            ];
-        } catch (ModelNotFoundException $e) {
-            $response = [
-                'status' => 'failed',
-                'message' => "Terjadi Kesalahan pada sistem : " . $e,
-            ];
+                    $listItem->status                       = $req->status;
+                    $listItem->insert_by                    = session()->get('id');
+                    $listItem->updated_by                   = session()->get('id');
+                    $listItem->updated_by_ip                = $req->ip();
+                    $listItem->save();
+
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Data berhasil disimpan'
+                ];
+            } catch (ModelNotFoundException $e) {
+                $response = [
+                    'status' => 'failed',
+                    'message' => "Terjadi Kesalahan pada sistem : " . $e,
+                ];
+            }
         }
+        elseif ($nosertifikat != $req->nosertifikat) {
 
-        $log_app = new LogApp();
-        $log_app->method = $req->method();
-        $log_app->request = "Create Traning Course";
-        $log_app->response =  json_encode($response);
-        $log_app->pages = 'Traning';
-        $log_app->user_id = session()->get('id');
-        $log_app->ip_address = $req->ip();
-        $log_app->save();
+            $existingRecord = SertifikatModel::where('no_sertifikat', $nosertifikat)->first();
+            if ($existingRecord ==null) {
+                    try {
+                        $listItem = SertifikatModel::find($req->iddtl);
+                        $listItem->nama_peserta                 = $req->participants_name;
+                        $listItem->email                        = $req->email;
+                        $listItem->nama_training                = $req->nama_training;
+                        $listItem->tanggal_training             = $tanggal_training;
+                        $listItem->no_urut_srt                  = $req->no_urut_srt;
+                        $listItem->kode_category_training_srt   = $req->kode_category_training_srt;
+                        $listItem->kode_srt                     = $req->kode_srt;
+                        $listItem->tahun_training_srt           = $req->tahun_training_srt;
+
+                        $listItem->no_sertifikat                = $req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
+
+                        $listItem->status                       = $req->status;
+                        $listItem->insert_by                    = session()->get('id');
+                        $listItem->updated_by                   = session()->get('id');
+                        $listItem->updated_by_ip                = $req->ip();
+                        $listItem->save();
+
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Data berhasil disimpan'
+                    ];
+                } catch (ModelNotFoundException $e) {
+                    $response = [
+                        'status' => 'failed',
+                        'message' => "Terjadi Kesalahan pada sistem : " . $e,
+                    ];
+                }
+            }
+            else
+            {
+                $response = [
+                    'status' => 'failed',
+                    'message' => 'Nomor Sertifikat sudah ada'
+                ];
+            }
+        }
+        //dd($response);
+
+        // $log_app = new LogApp();
+        // $log_app->method = $req->method();
+        // $log_app->request = "Create Traning Course";
+        // $log_app->response =  json_encode($response);
+        // $log_app->pages = 'Traning';
+        // $log_app->user_id = session()->get('id');
+        // $log_app->ip_address = $req->ip();
+        // $log_app->save();
         return json_encode($response);
     }
 

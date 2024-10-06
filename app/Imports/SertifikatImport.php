@@ -28,13 +28,13 @@ class SertifikatImport implements ToCollection,WithHeadingRow
             }
 
             // Validasi $row[5] harus 3 huruf
-            if (!preg_match('/^[A-Za-z]{3}$/', $row["kode_training"])) {
-                $errorMessages[] = 'Kolom Kode training harus 3 huruf '.$row["kode_training"].'';
+            if (!preg_match('/^[A-Za-z0-9]{3}$/', $row["kode_training"])) {
+                $errorMessages[] = 'Kolom Kode training harus 3 karakter, bisa huruf atau angka '.$row["kode_training"].'';
             }
 
             // Validasi $row[6] harus 6 huruf
-            if (!preg_match('/^[A-Za-z]{6}$/', $row["kode_sertifikasi"])) {
-                $errorMessages[] = 'Kolom kode_sertifikasi  harus 6 huruf '. $row["kode_sertifikasi"] .'';
+            if (!preg_match('/^[A-Za-z0-9]{6}$/', $row["kode_sertifikasi"])) {
+                $errorMessages[] = 'Kolom kode_sertifikasi harus 6 karakter, bisa huruf atau angka '. $row["kode_sertifikasi"] .'';
             }
 
             // Validasi $row[7] harus 4 angka
