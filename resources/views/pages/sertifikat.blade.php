@@ -3,6 +3,9 @@
 @section('headers')
 <link rel="stylesheet" href="{{ asset('/') }}plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+
+
 <style>
     /* Style the input field */
     #myInput {
@@ -67,16 +70,18 @@
                                 </div>
                                 <div class="card-body">
                                         <div class="row">
-                                                  <div class="col-0">
+                                                  <div class="col-1">
                                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                                         <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                                       </button>
-
+                                                    <a type="button" id="filterButton" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i></a>
                                                   </div>
 
                                                   <div class="col-1">
-                                                  <a type="button" id="filterButton" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i></a>
+                                                  <!--<a type="button" id="filterButton" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i></a>-->
+                                                  {{-- <a href="{{ route('export-sertifikat')}}" type="button" id="filterButton" class="btn btn-primary"><i class="fa fa-download"></i></i></a> --}}
                                                   </div>
+
 
                                         </div>
 
@@ -87,9 +92,13 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Nama Peserta</th>
-                                                    <th>No Sertifikat</th>
+                                                    <th>Email</th>
+
                                                     <th>Nama Training</th>
+                                                    <th>No Sertifikat</th>
                                                     <th>Tanggal Training</th>
+                                                    <th>Tanggal Status Sertifikat</th>
+                                                    <th>Status Sertifikat</th>
                                                     <th>Status</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -155,6 +164,16 @@
                                 <!-- Options will be appended here -->
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="statussertifikat">Status Sertifikat</label>
+                            <select id="statussertifikatSelect" class="form-control">
+                                <option value="">All</option>
+                                <option value="1">Permanent</option>
+                                <option value="0">Active</option>
+                                <option value="2">Kadaluarsa</option>
+                            </select>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -186,8 +205,10 @@
 @section('script')
 <script src="{{ asset('/') }}dist/js/main.js"></script>
 <script src="{{ asset('/') }}plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="{{ asset('/') }}plugins/sweetalert2/sweetalert2.all.min.js"></script>
-<script src="{{ asset('/') }}plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 <script>
 function escapeHtml(unsafe) {
@@ -230,156 +251,177 @@ function formatDate(dateStr) {
     return day + ' ' + month + ' ' + year;
 }
 
-    $(document).ready(function() {
-        // Initialize dropdown data and table data on page load
-        loadDropdownData();
-        loadTableData();
-
-        // Show modal on filter button click
-        $('#filterButton').on('click', function() {
-            $('#filterModal').modal('show');
-        });
-
-
-
-        // Handle apply filter button click
-        $('#applyFilter').on('click', function() {
-            applyFilterAndReset();
-        });
-
-        // Reset select options when modal is hidden
-        $('#filterModal').on('hidden.bs.modal', function () {
-            resetSelectOptions();
-        });
-
-        // Function to apply filter and reset modal
-        function applyFilterAndReset() {
-            var title = $('#titleSelect').val();
-
-
-            // Load table data based on selected filter
-            loadTableData({
-                title: title,
-            });
-
-            $('#filterModal').modal('hide'); // Hide the modal
-            resetSelectOptions(); // Reset select options to "All"
-        }
-
-        // Function to reset select options to "All"
-        function resetSelectOptions() {
-            $('#titleSelect').val('');
-
-        }
-
-        // Function to populate dropdown list
-        function loadDropdownData() {
-            $.ajax({
-                url: '/public/get-filters-sertifikat', // URL endpoint to fetch data titleSelect nosertSelect namatrainigSelect
-                type: 'GET',
-                success: function(data) {
-                    var titleSelect = $('#titleSelect');
-                    var nosertSelect = $('#nosertSelect');
-                    var namatrainigSelect = $('#namatrainigSelect');
-
-
-                    titleSelect.empty(); // Clear existing items
-                    nosertSelect.empty(); // Clear existing items
-                    namatrainigSelect.empty(); // Clear existing items
-
-
-                    // Append "All" option to the select elements
-                    titleSelect.append('<option value="">All</option>');
-                    nosertSelect.append('<option value="">All</option>');
-                    namatrainigSelect.append('<option value="">All</option>');
-
-
-                    // Using Sets to store unique items
-                    var uniqueTitle = new Set();
-                    var uniqueNoSert = new Set();
-                    var uniqueNamaTrainig = new Set();
-
-                    $.each(data, function(key, value) {
-                        uniqueTitle.add(value.nama_peserta);
-                        uniqueNoSert.add(value.no_sertifikat);
-                        uniqueNamaTrainig.add(value.nama_training);
-                    });
-
-                    // Function to append unique items to the select elements
-                    function appendUniqueItems(set, selectElement) {
-                        set.forEach(function(item) {
-                            selectElement.append('<option value="' + escapeHtml(item) + '">' + escapeHtml(item) + '</option>');
-                        });
-                    }
-
-                    // Append unique items for each attribute to the select elements
-                    appendUniqueItems(uniqueTitle, titleSelect);
-                    appendUniqueItems(uniqueNoSert, nosertSelect);
-                    appendUniqueItems(uniqueNamaTrainig, namatrainigSelect);
-
-                },
-                error: function() {
-                    console.log("Error fetching data.");
+$(document).ready(function() {
+    // Initialize DataTable with Excel export button
+    // Initialize DataTable with hidden search box and Excel export button
+    var table = $('#side-list-visi-misi').DataTable({
+        dom: 'Bfrtip', // B: Buttons, f: search input, r: processing, t: table, i: table info, p: pagination
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Data Export Certificate',
+                text: 'Export to Excel',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6,7] // Exclude Status and Action columns
                 }
-            });
-        }
+            }
+        ],
+        dom: 'Brtip' // This removes the search input by excluding 'f' (the filter/search input box)
+    });
 
-        // Function to load table data
-        function loadTableData(filterValues) {
-            $.ajax({
-                url: '/public/get-data-sertifikat',
-                type: 'GET',
-                data: filterValues,
-                success: function(data) {
-                    var table = $('#side-list-visi-misi').DataTable();
-                    table.clear().draw();
 
-                    $.each(data, function(key, value) {
-                        var statusBadge =
-                                value.status == '1' ? '<span class="badge badge-primary">Publish</span>' :
-                                value.status == '2' ? '<span class="badge badge-warning">Pending</span>' :
-                                value.status == '3' ? '<span class="badge badge-secondary">Non Publish</span>' :
-                                value.status == '4' ? '<span class="badge badge-danger">Kadaluarsa</span>' : '';
+    // Function to load table data based on filters
+    function loadTableData(filterValues) {
+        $.ajax({
+            url: '/public/get-data-sertifikat',
+            type: 'GET',
+            data: filterValues,
+            success: function(data) {
+                table.clear().draw(); // Clear existing data
 
-                        table.row.add([
-                            key + 1,
-                                value.nama_peserta,
-                                value.nama_training,
-                                value.no_sertifikat,
-                                formatDate(value.tanggal_training),
-                                statusBadge,
-                                `
-                                <div class="container mt-0">
-                                    <div class="row">
-                                        <div class="ml-auto d-flex">
+                $.each(data, function(key, value) {
+                    var statusBadge = value.status == '1' ? '<span class="badge badge-primary">Publish</span>' :
+                                      value.status == '2' ? '<span class="badge badge-warning">Pending</span>' :
+                                      value.status == '3' ? '<span class="badge badge-secondary">Non Publish</span>' :
+                                      value.status == '4' ? '<span class="badge badge-danger">Kadaluarsa</span>' : '';
 
-                                            <div class="col text-right mb-3">
-                                                <a type="button" style="color:Green" href="/public/edit-sertifikat/${btoa(value.id)}" title="Edit Banner">
-                                                    <i class="fa fa-bars"></i>
-                                                </a>
-                                            </div>
-                                            <div class="col text-right mb-3">
-                                                <a type="button" href="#" style="color:red" onclick="removeSertifikat('${value.id}')" title="Delete Banner">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </div>
+                    var status_permanent = value.tanggal_kadauarsa_srt && new Date(value.tanggal_kadauarsa_srt.replace(' ', 'T')) < Date.now() ?
+                                           '<span class="badge badge-danger">Kadaluarsa</span>' :
+                                           value.permanent_srt == '0' ? '<span class="badge badge-success">Aktif</span>' :
+                                           value.permanent_srt == '1' ? '<span class="badge badge-primary">Permanent</span>' : '';
+
+                    table.row.add([
+                        key + 1,
+                        value.nama_peserta,
+                        value.email,
+                        value.nama_training,
+                        value.no_sertifikat,
+                        formatDate(value.tanggal_training),
+                        formatDate(value.tanggal_kadauarsa_srt),
+                        status_permanent,
+                        statusBadge,
+                        `
+                        <div class="container mt-0">
+                            <div class="row">
+                                <div class="ml-auto d-flex">
+                                    <div class="col text-right mb-3">
+                                        <a type="button" style="color:Green" href="/public/edit-sertifikat/${btoa(value.id)}" title="Edit Banner">
+                                            <i class="fa fa-bars"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col text-right mb-3">
+                                        <a type="button" href="#" style="color:red" onclick="removeSertifikat('${value.id}')" title="Delete Sertifikat">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        `
+                    ]).draw(false);
+                });
+            },
+            error: function() {
+                console.log("Error fetching table data.");
+            }
+        });
+    }
 
-                                `
-                        ]).draw(false);
-                    });
-                },
-                error: function() {
-                    console.log("Error fetching table data.");
-                }
-            });
-        }
+    // Call loadTableData when the page loads
+    loadTableData();
 
-        // Initialize DataTable
-        $('#side-list-visi-misi').DataTable();
+    // Filter modal logic
+    $('#filterButton').on('click', function() {
+        $('#filterModal').modal('show');
     });
+
+    $('#applyFilter').on('click', function() {
+        applyFilterAndReset();
+    });
+
+    $('#filterModal').on('hidden.bs.modal', function () {
+        resetSelectOptions();
+    });
+
+    function applyFilterAndReset() {
+        var title = $('#titleSelect').val();
+        var nosert = $('#nosertSelect').val();
+        var namatrainig = $('#namatrainigSelect').val();
+        var statussertifikat = $('#statussertifikatSelect').val();
+
+        // Pass the filter values to loadTableData
+        loadTableData({
+            title: title,
+            nosert: nosert,
+            namatrainig: namatrainig,
+            statussertifikat: statussertifikat,
+        });
+
+        // Hide the filter modal and reset the selections
+        $('#filterModal').modal('hide');
+        resetSelectOptions();
+    }
+
+    function resetSelectOptions() {
+        $('#titleSelect').val('');
+        $('#nosertSelect').val('');
+        $('#namatrainigSelect').val('');
+        $('#statussertifikatSelect').val('');
+    }
+
+    function loadDropdownData() {
+        $.ajax({
+            url: '/public/get-filters-sertifikat',
+            type: 'GET',
+            success: function(data) {
+                var titleSelect = $('#titleSelect');
+                titleSelect.empty();
+                titleSelect.append('<option value="">All</option>');
+
+                var nosertSelect = $('#nosertSelect');
+                nosertSelect.empty();
+                nosertSelect.append('<option value="">All</option>');
+
+                var namatrainigSelect = $('#namatrainigSelect');
+                namatrainigSelect.empty();
+                namatrainigSelect.append('<option value="">All</option>');
+
+                // Unique Title (Nama Peserta)
+                var uniqueTitle = new Set();
+                $.each(data, function(key, value) {
+                    uniqueTitle.add(value.nama_peserta);
+                });
+                uniqueTitle.forEach(function(item) {
+                    titleSelect.append('<option value="' + escapeHtml(item) + '">' + escapeHtml(item) + '</option>');
+                });
+
+                // Unique No Sertifikat
+                var uniqueNosert = new Set();
+                $.each(data, function(key, value) {
+                    uniqueNosert.add(value.no_sertifikat);
+                });
+                uniqueNosert.forEach(function(item) {
+                    nosertSelect.append('<option value="' + escapeHtml(item) + '">' + escapeHtml(item) + '</option>');
+                });
+
+                // Unique Nama Training
+                var uniqueNamatrainig = new Set();
+                $.each(data, function(key, value) {
+                    uniqueNamatrainig.add(value.nama_training);
+                });
+                uniqueNamatrainig.forEach(function(item) {
+                    namatrainigSelect.append('<option value="' + escapeHtml(item) + '">' + escapeHtml(item) + '</option>');
+                });
+            },
+            error: function() {
+                console.log("Error fetching data.");
+            }
+        });
+    }
+
+    loadDropdownData();
+});
+
 
 
 

@@ -173,6 +173,7 @@
                                             </div>
                                         </div>
 
+
                                         <!-- No Sertifikat -->
                                         <div class="form-group row">
                                             <input type="text"class="col-md-2 form-control"  readonly value="No Sertifikat">
@@ -191,6 +192,41 @@
                                                     </div>
                                                     <div class="col-2">
                                                         <select class="form-control" id="tahun_training_srt" name="tahun_training_srt">
+                                                            <option>Tahun</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <input type="text"class="col-md-2 form-control"  readonly value="Kadaluarsa sertifikat">
+                                            <div class="col-md-1"> </div>
+                                            <div class="col-md-3" >
+                                                    <select name="status_kadaluarsa" class="form-control" id="status_kadaluarsa">
+                                                        <option value="">Pilih Tanggal Kadaluarsa Sertifikat</option>
+                                                        <option value="1">Permanent</option>
+                                                        <option value="0">Tidak Permanent</option>
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <input type="text"class="col-md-2 form-control"  hidden readonly value="Tanggal Kadaluarsa sertifikat">
+                                            <div class="col-md-3"> </div>
+                                            <div class="col-md-7" id="jadwal-container" style="display: none;">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <select class="form-control" id="jadwal_selesai_tanggal" name="jadwal_selesai_tanggal">
+                                                            <option>Tanggal</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <select class="form-control" id="jadwal_selesai_bulan" name="jadwal_selesai_bulan">
+                                                            <option>Bulan</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <select class="form-control" id="jadwal_selesai_tahun" name="jadwal_selesai_tahun">
                                                             <option>Tahun</option>
                                                         </select>
                                                     </div>
@@ -296,6 +332,22 @@
 <script>
  // Function to validate input by ID
        // Fungsi untuk validasi tambahan menggunakan JavaScript
+       document.getElementById('status_kadaluarsa').addEventListener('change', function() {
+        var jadwalContainer = document.getElementById('jadwal-container');
+        if (this.value == "0") {
+            jadwalContainer.style.display = 'block'; // Tampilkan elemen jika 'Tidak Permanent'
+        } else {
+            jadwalContainer.style.display = 'none'; // Sembunyikan elemen jika 'Permanent'
+        }
+    });
+    $('#status_kadaluarsa').on('change', function() {
+    var jadwalContainer = $('#jadwal-container');
+    if ($(this).val() == "0") {
+        jadwalContainer.show(); // Tampilkan elemen
+    } else {
+        jadwalContainer.hide(); // Sembunyikan elemen
+    }
+});
        function validateInput(event) {
         const inputField = event.target;
         const inputId = inputField.id;

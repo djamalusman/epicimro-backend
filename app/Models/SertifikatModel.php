@@ -15,5 +15,5 @@ class SertifikatModel extends Model
     //set auto incrementing for PK
     public $incrementing = true;
 
-    protected $fillable = [ 'nama_peserta','email','nama_training','tanggal_training','no_urut_srt','kode_category_training_srt','kode_srt','tahun_training_srt','no_sertifikat','status','insert_by', 'updated_by','updated_by_ip','status'];
+    protected $fillable = [ 'nama_peserta','email','nama_training','tanggal_training','tanggal_kadauarsa_srt','permanent_srt','no_urut_srt','kode_category_training_srt','kode_srt','tahun_training_srt','no_sertifikat','status','insert_by', 'updated_by','updated_by_ip','status'];
 }

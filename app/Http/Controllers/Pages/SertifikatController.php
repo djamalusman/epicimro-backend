@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Intervention\Image\ImageManager;
 use PDO;
+use App\Exports\SertifikatExport; // Sesuaikan namespace
 class SertifikatController extends Controller
 {
     public function index($id)
@@ -50,19 +51,39 @@ class SertifikatController extends Controller
         ->select('d_sertifikat.*') ; // Pilih kolom yang dibutuhkan
 
         // Menerapkan filter berdasarkan parameter yang tersedia
-        if ($request->has('nama_peserta') && $request->nama_peserta != '') {
-            $query->where('d_sertifikat.nama_peserta', 'LIKE', '%' . $request->nama_peserta . '%');
+        if ($request->has('title') && $request->title != null) {
+            $query->where('d_sertifikat.nama_peserta', 'LIKE', '%' . $request->title . '%');
         }
-        if ($request->nama_training != '') {
-            $query->where('d_sertifikat.nama_training', 'LIKE', '%' . $request->nama_training . '%');
+        if ($request->namatrainig != null) {
+            $query->where('d_sertifikat.nama_training', 'LIKE', '%' . $request->namatrainig . '%');
         }
-        if ($request->no_sertifikat != '') {
-            $query->where('d_sertifikat.no_sertifikat', 'LIKE', '%' . $request->no_sertifikat . '%');
+        if ($request->nosert != null) {
+            $query->where('d_sertifikat.no_sertifikat', 'LIKE', '%' . $request->nosert . '%');
+            // $courses = $query->get();
+            // dd($courses);
+        }
+        if ($request->statussertifikat !=null && $request->statussertifikat == 1) {
+            $query->where('d_sertifikat.permanent_srt', 'LIKE', '%' . $request->statussertifikat . '%');
+            $query->where('d_sertifikat.tanggal_kadauarsa_srt',null);
+        }
+        if ($request->statussertifikat !=null&& $request->statussertifikat == 0) {
+
+            $query->where('d_sertifikat.tanggal_kadauarsa_srt', '>', now())
+            ->where('d_sertifikat.permanent_srt', 0);
+        }
+        if ($request->statussertifikat !=null && $request->statussertifikat == 2) {
+            $query->where('d_sertifikat.tanggal_kadauarsa_srt', '<', now())
+            ->where('d_sertifikat.permanent_srt',0);
         }
 
+        // "title" => null
+        // "nosert" => null
+        // "namatrainig" => null
+        // "statussertifikat" => "0"
 
         // Mengambil hasil query
         $courses = $query->get();
+        //dd($courses);
         // Mengembalikan data dalam format JSON
         return response()->json($courses);
     }
@@ -106,6 +127,10 @@ class SertifikatController extends Controller
             $req->jadwal_mulai_bulan,
             $req->jadwal_mulai_tanggal
         )->toDateString();
+
+
+
+
         $nosertifikat=$req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
         $existingRecord = SertifikatModel::where('no_sertifikat', $nosertifikat)->first();
 
@@ -125,6 +150,18 @@ class SertifikatController extends Controller
                 $listItem->no_sertifikat                = $req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
 
                 $listItem->status                       = $req->status;
+                if ($req->status_kadaluarsa == 1) {
+                    $listItem->permanent_srt = 1;
+                } else {
+                    $jadwalSelesai = Carbon::createFromDate(
+                        $req->jadwal_selesai_tahun,
+                        $req->jadwal_selesai_bulan,
+                        $req->jadwal_selesai_tanggal
+                    )->toDateString();
+                    $listItem->tanggal_kadauarsa_srt    = $jadwalSelesai;
+                    $listItem->permanent_srt = 0;
+
+                }
                 $listItem->insert_by                    = session()->get('id');
                 $listItem->updated_by                   = session()->get('id');
 
@@ -176,6 +213,7 @@ class SertifikatController extends Controller
         //dd($data);
          $dt_list_item =  SertifikatModel::where('id',base64_decode($id))->first();
         $data['startdate']  = Carbon::parse($dt_list_item->tanggal_training)->format('Y-m-d');
+        $data['enddate']  = Carbon::parse($dt_list_item->tanggal_kadauarsa_srt)->format('Y-m-d');
         // $data['enddate']  = Carbon::parse($dt_list_item->enddate)->format('Y-m-d');
         $data['listitem']=$dt_list_item;
         $data['iddtl']=base64_decode($id);
@@ -195,7 +233,6 @@ class SertifikatController extends Controller
         $nosertifikat=$req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
 
         if ($nosertifikat == $req->nosertifikat) {
-            # code...
 
             try {
                     $listItem = SertifikatModel::find($req->iddtl);
@@ -211,6 +248,18 @@ class SertifikatController extends Controller
                     $listItem->no_sertifikat                = $req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
 
                     $listItem->status                       = $req->status;
+                    if ($req->status_kadaluarsa == 1) {
+                        $listItem->permanent_srt = 1;
+                    } else {
+                        $jadwalSelesai = Carbon::createFromDate(
+                            $req->jadwal_selesai_tahun,
+                            $req->jadwal_selesai_bulan,
+                            $req->jadwal_selesai_tanggal
+                        )->toDateString();
+                        $listItem->tanggal_kadauarsa_srt    = $jadwalSelesai;
+                        $listItem->permanent_srt = 0;
+
+                    }
                     $listItem->insert_by                    = session()->get('id');
                     $listItem->updated_by                   = session()->get('id');
                     $listItem->updated_by_ip                = $req->ip();
@@ -245,6 +294,18 @@ class SertifikatController extends Controller
                         $listItem->no_sertifikat                = $req->no_urut_srt . "/" . $req->kode_category_training_srt . "/" . $req->kode_srt . "/" . $req->tahun_training_srt;
 
                         $listItem->status                       = $req->status;
+                        if ($req->status_kadaluarsa == 1) {
+                            $listItem->permanent_srt = 1;
+                        } else {
+                            $jadwalSelesai = Carbon::createFromDate(
+                                $req->jadwal_selesai_tahun,
+                                $req->jadwal_selesai_bulan,
+                                $req->jadwal_selesai_tanggal
+                            )->toDateString();
+                            $listItem->tanggal_kadauarsa_srt    = $jadwalSelesai;
+                            $listItem->permanent_srt = 0;
+
+                        }
                         $listItem->insert_by                    = session()->get('id');
                         $listItem->updated_by                   = session()->get('id');
                         $listItem->updated_by_ip                = $req->ip();
@@ -320,6 +381,12 @@ class SertifikatController extends Controller
             'message' => 'Proses impor selesai!',
             'duplicateData' => $duplicateData,
         ]);
+    }
+
+    public function export()
+    {
+
+        return Excel::download(new SertifikatExport(), 'data_sertifikat.xlsx');
     }
 
 

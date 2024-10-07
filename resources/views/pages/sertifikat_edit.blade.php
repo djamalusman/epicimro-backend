@@ -123,7 +123,7 @@
                                 <input type="hidden" name="iddtl" value="{{ $iddtl }}">
                                 <div class="card">
                                     <div class="card-body">
-                                         <input type="text" hidden class="form-control" id="nosertifikat" value="{{ $listitem->no_sertifikat }}" name="participants_name">
+                                         <input type="text" hidden class="form-control" id="nosertifikat" value="{{ $listitem->no_sertifikat }}" name="nosertifikat">
                                         <!-- Nama Perusahaan -->
                                         <div class="form-group row">
                                             <input type="text"class="col-md-2 form-control" readonly value="Nama Perserta">
@@ -200,6 +200,67 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-group row">
+                                            <input type="text"class="col-md-2 form-control"  readonly value="Kadaluarsa sertifikat">
+                                            <div class="col-md-1"> </div>
+                                            <div class="col-md-3" >
+                                                    <select name="status_kadaluarsa" class="form-control" id="status_kadaluarsa">
+                                                        <option value="">Pilih Tanggal Kadaluarsa Sertifikat</option>
+                                                        <option value="1"{{ $listitem->permanent_srt == 1 ? 'selected' : '' }}>Permanent</option>
+                                                        <option value="0"{{ $listitem->permanent_srt == 0 ? 'selected' : '' }}>Tidak Permanent</option>
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        @if ($listitem->permanent_srt == 0 )
+                                            <div class="form-group row">
+                                                <input type="text"class="col-md-2 form-control"  hidden readonly value="Tanggal Kadaluarsa sertifikat">
+                                                <div class="col-md-3"> </div>
+                                                <div class="col-md-7" id="jadwal-container">
+                                                    <div class="row">
+                                                        <div class="col-2">
+                                                            <select class="form-control" id="jadwal_selesai_tanggal" name="jadwal_selesai_tanggal">
+                                                                <option>Tanggal</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <select class="form-control" id="jadwal_selesai_bulan" name="jadwal_selesai_bulan">
+                                                                <option>Bulan</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <select class="form-control" id="jadwal_selesai_tahun" name="jadwal_selesai_tahun">
+                                                                <option>Tahun</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="form-group row">
+                                                <input type="text"class="col-md-2 form-control"  hidden readonly value="Tanggal Kadaluarsa sertifikat">
+                                                <div class="col-md-3"> </div>
+                                                <div class="col-md-7" id="jadwal-container" style="display: none;">
+                                                    <div class="row">
+                                                        <div class="col-2">
+                                                            <select class="form-control" id="jadwal_selesai_tanggal" name="jadwal_selesai_tanggale">
+                                                                <option>Tanggal</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <select class="form-control" id="jadwal_selesai_bulan" name="jadwal_selesai_bulane">
+                                                                <option>Bulan</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <select class="form-control" id="jadwal_selesai_tahun" name="jadwal_selesai_tahune">
+                                                                <option>Tahun</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+
                                         <br>
                                         <br>
                                         <!-- Buttons -->
@@ -315,6 +376,14 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+    document.getElementById('status_kadaluarsa').addEventListener('change', function() {
+        var jadwalContainer = document.getElementById('jadwal-container');
+        if (this.value == "0") {
+            jadwalContainer.style.display = 'block'; // Tampilkan elemen jika 'Tidak Permanent'
+        } else {
+            jadwalContainer.style.display = 'none'; // Sembunyikan elemen jika 'Permanent'
+        }
+    });
     function validateInput(event) {
         const inputField = event.target;
         const inputId = inputField.id;
@@ -469,7 +538,42 @@
                 }));
             }
 
+            var tanggalEndDate = '{{ $enddate }}';
 
+            // Pecah data tanggal menjadi tahun, bulan, dan hari
+            var tanggalPartsEndate = tanggalEndDate.split("-");
+            var tahunEndate = tanggalPartsEndate[0];
+            var bulanEndate = tanggalPartsEndate[1];
+            var hariEndate = tanggalPartsEndate[2];
+
+            // Isi nilai input tanggal selesai
+            $('select[name="jadwal_selesai_tanggal"]').val(tanggalEndDate);
+
+            // Buat opsi untuk tanggal, bulan, dan tahun
+            for (var i = 1; i <= 31; i++) {
+                $('select[name="jadwal_selesai_tanggal"]').append($('<option>', {
+                    value: i,
+                    text: i,
+                    selected: (i == parseInt(hariEndate)) // Set opsi terpilih jika nilai sesuai
+                }));
+            }
+
+            months.forEach((month, index) => {
+                $('select[name="jadwal_selesai_bulan"]').append($('<option>', {
+                    value: index + 1,
+                    text: month,
+                    selected: (index + 1 == parseInt(bulanEndate)) // Set opsi terpilih jika nilai sesuai
+                }));
+            });
+
+            var currentYearEndate = new Date().getFullYear();
+            for (var i = currentYearEndate - 100; i <= currentYearEndate + 20; i++) {
+                $('select[name="jadwal_selesai_tahun"]').append($('<option>', {
+                    value: i,
+                    text: i,
+                    selected: (i == parseInt(tahunEndate)) // Set opsi terpilih jika nilai sesuai
+                }));
+            }
 
             // Set nilai dropdown ke nilai yang ada
             // $('select[name="jadwal_mulai_tanggal"]').val(parseInt(hari));
@@ -481,25 +585,26 @@
         // Initialize Select2
         $('select[name="jadwal_mulai_tanggal"], select[name="jadwal_mulai_bulan"], select[name="jadwal_mulai_tahun"]').select2();
         $('select[name="jadwal_selesai_tanggal"], select[name="jadwal_selesai_bulan"], select[name="jadwal_selesai_tahun"]').select2();
+        $('select[name="jadwal_selesai_tanggale"], select[name="jadwal_selesai_bulane"], select[name="jadwal_selesai_tahune"]').select2();
         $('select[name="category"], select[name="jenis_sertifikasi"]').select2();
         $('select[name="provinsi"]').select2();
         $('select[name="type"]').select2();
         $('select[name="tahun_training_srt"]').select2();
         // Populate days
         for (let i = 1; i <= 31; i++) {
-            $('select[name="jadwal_mulai_tanggal"], select[name="jadwal_selesai_tanggal"]').append(`<option value="${i}">${i}</option>`);
+            $('select[name="jadwal_mulai_tanggal"], select[name="jadwal_selesai_tanggal"],select[name="jadwal_selesai_tanggale"]').append(`<option value="${i}">${i}</option>`);
         }
 
         // Populate months
         const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         months.forEach((month, index) => {
-            $('select[name="jadwal_mulai_bulan"], select[name="jadwal_selesai_bulan"]').append(`<option value="${index + 1}">${month}</option>`);
+            $('select[name="jadwal_mulai_bulan"], select[name="jadwal_selesai_bulan"],select[name="jadwal_selesai_bulane"]').append(`<option value="${index + 1}">${month}</option>`);
         });
 
         // Populate years
         const currentYear = new Date().getFullYear();
         for (let i = currentYear; i <= currentYear + 10; i++) {
-            $('select[name="jadwal_mulai_tahun"], select[name="jadwal_selesai_tahun"]').append(`<option value="${i}">${i}</option>`);
+            $('select[name="jadwal_mulai_tahun"], select[name="jadwal_selesai_tahun"],select[name="jadwal_selesai_tahune"]').append(`<option value="${i}">${i}</option>`);
         }
 
         for (let i = currentYear; i <= currentYear + 10; i++) {
@@ -534,7 +639,7 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(response) {
+                success: function(data) {
                     hideLoading(); // Hide loading indicator
                     data = JSON.parse(data);
                     console.log(data);

@@ -634,6 +634,9 @@ use Illuminate\Support\Facades\Response;
                     return response()->download($filePath);
                 })->name('download-excel');
 
+            Route::get('/export-sertifikat', [SertifikatController::class, 'export'])
+                ->name('export-sertifikat');
+
             // Route::put('/update-news-update-detail', [NewsUpdateController::class, 'updateNewsUpdateDetail'])
             //     ->name('update-news-update-detail');
 
