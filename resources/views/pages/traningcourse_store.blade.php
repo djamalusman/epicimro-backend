@@ -138,6 +138,13 @@
                                                 <input type="text" class="form-control" id="nama_training" name="nama_training">
                                             </div>
                                         </div>
+                                        <div class="form-group row">
+                                            <input type="text" class="col-md-2 form-control" readonly value="About Training">
+                                           <div class="col-md-1"> </div>
+                                           <div class="col-md-9">
+                                               <textarea class="form-control abouttraining" name="abouttraining" id="abouttraining" rows="4" cols="50"></textarea>
+                                           </div>
+                                       </div>
                                         <!-- Nama Yotube -->
                                         <div class="form-group row">
                                             <input type="text"class="col-md-2 form-control" readonly value="Yotube">
@@ -299,7 +306,13 @@
                                                 </select>
                                             </div>
                                         </div>
-
+                                        <div class="form-group row">
+                                            <input type="text" class="col-md-2 form-control" readonly value="About Trainer">
+                                           <div class="col-md-1"> </div>
+                                           <div class="col-md-9">
+                                               <textarea class="form-control abouttrainer" name="abouttrainer " id="abouttrainer" rows="4" cols="50"></textarea>
+                                           </div>
+                                       </div>
                                         <!-- Provinsi -->
                                         <div class="form-group row">
                                             <input type="text"class="col-md-2 form-control" readonly value="Provinsi">
@@ -342,6 +355,15 @@
                                                 <input type="text" class="form-control" id="link_pendaftaran" placeholder="Link Google Form / Ms Form" name="link_pendaftaran">
                                             </div>
                                         </div>
+
+
+                                       <div class="form-group row">
+                                            <input type="text" class="col-md-2 form-control" readonly value="About Career">
+                                           <div class="col-md-1"> </div>
+                                           <div class="col-md-9">
+                                               <textarea class="form-control aboutcareer" name="aboutcareer" id="aboutcareer" rows="4" cols="50"></textarea>
+                                           </div>
+                                       </div>
                                         <br>
                                         <br>
                                         <!-- Buttons -->
@@ -452,6 +474,80 @@
         return prefix === undefined ? rupiah : (rupiah ? 'Rp ' + rupiah : '');
     }
 
+    $(".abouttraining").summernote({
+        height: 100,
+            toolbar: [
+                ['font', [ 'fontsize', 'clear']], // Menampilkan opsi style font dan ukuran font
+                //['font', ['fontname', 'fontsize', 'clear']],
+                ['color', ['color']], // Tombol warna ditampilkan
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['picture']], // Menambahkan tombol untuk menyisipkan gambar
+            ],
+            //fontNames: ['Arial', 'Courier New', 'Helvetica', 'Times New Roman'], // Daftar font yang tersedia
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36', '48', '64'], // Daftar ukuran font
+            buttons: {
+                recentColor: function() {
+                    return $.summernote.ui.button({
+                        contents: '<i class="note-icon-note"></i> Recent Color',
+                        tooltip: 'Recent Color',
+                        click: function() {
+                            // Fungsi untuk recent color
+                        }
+                    }).render();
+                }
+            },
+            disableDragAndDrop: true
+    });
+
+    $(".abouttrainer").summernote({
+        height: 100,
+            toolbar: [
+                ['font', [ 'fontsize', 'clear']], // Menampilkan opsi style font dan ukuran font
+                //['font', ['fontname', 'fontsize', 'clear']],
+                ['color', ['color']], // Tombol warna ditampilkan
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['picture']], // Menambahkan tombol untuk menyisipkan gambar
+            ],
+            //fontNames: ['Arial', 'Courier New', 'Helvetica', 'Times New Roman'], // Daftar font yang tersedia
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36', '48', '64'], // Daftar ukuran font
+            buttons: {
+                recentColor: function() {
+                    return $.summernote.ui.button({
+                        contents: '<i class="note-icon-note"></i> Recent Color',
+                        tooltip: 'Recent Color',
+                        click: function() {
+                            // Fungsi untuk recent color
+                        }
+                    }).render();
+                }
+            },
+            disableDragAndDrop: true
+    });
+
+    $(".aboutcareer").summernote({
+        height: 100,
+            toolbar: [
+                ['font', [ 'fontsize', 'clear']], // Menampilkan opsi style font dan ukuran font
+                //['font', ['fontname', 'fontsize', 'clear']],
+                ['color', ['color']], // Tombol warna ditampilkan
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['picture']], // Menambahkan tombol untuk menyisipkan gambar
+            ],
+            //fontNames: ['Arial', 'Courier New', 'Helvetica', 'Times New Roman'], // Daftar font yang tersedia
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36', '48', '64'], // Daftar ukuran font
+            buttons: {
+                recentColor: function() {
+                    return $.summernote.ui.button({
+                        contents: '<i class="note-icon-note"></i> Recent Color',
+                        tooltip: 'Recent Color',
+                        click: function() {
+                            // Fungsi untuk recent color
+                        }
+                    }).render();
+                }
+            },
+            disableDragAndDrop: true
+    });
     document.addEventListener('DOMContentLoaded', function() {
         var registrationFeeInput = document.getElementById('registrationfee');
 
@@ -492,6 +588,8 @@
         var jenis_sertifikasiText = $('#jenis_sertifikasi option:selected').text();
         var typeText = $('#type option:selected').text();
         var provinsiText = $('#provinsi option:selected').text();
+
+
         var formData = {
             companyname: $('#company_name').val(),
             title: $('#nama_training').val(),
@@ -506,6 +604,10 @@
             jadwal_selesai_tanggal: formatDate(`${$('#jadwal_selesai_tahun').val()}-${$('#jadwal_selesai_bulan').val()}-${$('#jadwal_selesai_tanggal').val()}`),
             type: typeText,
             provinsi: provinsiText,
+            aboutraining: $('#abouttraining').val(),
+            abouttrainer: $('#abouttrainer').val(),
+            aboutcareer: $('#aboutcareer').val(),
+
             lokasi: $('#lokasi').val(),
             link_pendaftaran: $('#link_pendaftaran').val(),
             status: 3

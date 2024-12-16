@@ -161,7 +161,7 @@ class TrainingCourseController extends Controller
 
     public function storeCourseEndpoint(Request $req)
     {
-       // $this->generateNumber();
+
 
         try {
 
@@ -182,6 +182,11 @@ class TrainingCourseController extends Controller
             $type = $req->type === 'Pilih Type' ? 0 : $req->type;
 
             $listItem = new TraningCourseDetailsModel();
+
+            $listItem->abouttraining                = $req->abouttraining;
+            $listItem->abouttrainer                 = $req->abouttrainer;
+            $listItem->aboutcareer                  = $req->aboutcareer;
+
             $listItem->company_name                 = $req->company_name;
             $listItem->traning_name                 = $req->nama_training;
             $listItem->id_m_category_training_course          = $req->category;
@@ -362,6 +367,9 @@ class TrainingCourseController extends Controller
 
 
             $listItem = TraningCourseDetailsModel::find($req->iddtl);
+            $listItem->abouttraining                = $req->abouttraining;
+            $listItem->abouttrainer                 = $req->abouttrainer;
+            $listItem->aboutcareer                  = $req->aboutcareer;
             $listItem->company_name                 = $req->company_name;
             $listItem->traning_name                 = $req->nama_training;
             $listItem->id_m_category_training_course          = $req->category;
@@ -480,7 +488,7 @@ class TrainingCourseController extends Controller
                     $datafasilitas->save();
                 }
             }
-            
+
             // ini file
             if (!is_null($req->photo)) {
                 for ($index = 0; $index < count($req->photo); $index++) {
@@ -582,7 +590,7 @@ class TrainingCourseController extends Controller
 
     public function removePhotoEndpoint ($id)
     {
-        
+
         dtc_File_TrainingCourseModel::where('id', $id)->delete();
 
         $response = [
