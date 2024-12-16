@@ -56,21 +56,11 @@ return [
             'throw' => false,
         ],
 
-        'sftp' => [
-            'driver' => 'sftp',
-            'host' => env('SFTP_HOST'),
-            // 'port' => env('SFTP_PORT'),
-            'username' => env('SFTP_USERNAME'),
-            'password' => env('SFTP_PASSWORD'),
-            'root' => '/var/www/html/ifg/storage/app/public/',
-            'timeout' => 10,
-            'visibility' => 'public',
-            'permPublic' => 755,
-        ],
+
 
         'windows_uploads' => [
             'driver' => 'local',
-            'root'   => 'E:/laragon/www/frontend/storage/app/public/',
+            'root'   => 'C:\xampp\htdocs\frontend_epicimro\storage\app\public',
             'visibility' => 'public',
         ],
 
