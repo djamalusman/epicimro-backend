@@ -14,7 +14,7 @@ class TraningCourseDetailsModel extends Model
 
      protected $fillable = ['id_m_category_training_course', 'id_m_jenis_sertifikasi_training_course','company_name','traning_name','training_duration',
      'startdate','enddate','registrationfee',
-     'typeonlineoffile','file','status','generatenumber','lokasi','yotube','abouttraining','abouttrainer','aboutcareer',
+     'typeonlineoffile','file','status','generatenumber','lokasi','yotube','abouttraining','abouttrainer','aboutcareer','tab_active',
      'link_pendaftaran','insert_by', 'updated_by','updated_by_ip','id_provinsi'];
 
 }

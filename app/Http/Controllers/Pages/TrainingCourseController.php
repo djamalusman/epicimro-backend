@@ -180,13 +180,24 @@ class TrainingCourseController extends Controller
 
             $idProvinsi = $req->provinsi === 'Pilih Provinsi' ? 0 : $req->provinsi;
             $type = $req->type === 'Pilih Type' ? 0 : $req->type;
+            $tab_active;
 
+            if ($req->abouttraining !="" | $req->abouttraining != null) {
+                $tab_active=1;
+            }
+
+            if ($req->abouttrainer !="" | $req->abouttrainer != null) {
+                $tab_active=2;
+            }
+            if ($req->aboutcareer !="" | $req->aboutcareer != null) {
+                $tab_active=3;
+            }
             $listItem = new TraningCourseDetailsModel();
 
             $listItem->abouttraining                = $req->abouttraining;
             $listItem->abouttrainer                 = $req->abouttrainer;
             $listItem->aboutcareer                  = $req->aboutcareer;
-
+            $listItem->tab_active                   = $req->tab_active;
             $listItem->company_name                 = $req->company_name;
             $listItem->traning_name                 = $req->nama_training;
             $listItem->id_m_category_training_course          = $req->category;
@@ -365,11 +376,24 @@ class TrainingCourseController extends Controller
 
             $idProvinsi = $req->provinsi === 'Pilih Provinsi' ? 0 : $req->provinsi;
 
+            $tab_active;
+
+            if ($req->abouttraining !="" | $req->abouttraining != null) {
+                $tab_active=1;
+            }
+
+            if ($req->abouttrainer !="" | $req->abouttrainer != null) {
+                $tab_active=2;
+            }
+            if ($req->aboutcareer !="" | $req->aboutcareer != null) {
+                $tab_active=3;
+            }
 
             $listItem = TraningCourseDetailsModel::find($req->iddtl);
             $listItem->abouttraining                = $req->abouttraining;
             $listItem->abouttrainer                 = $req->abouttrainer;
             $listItem->aboutcareer                  = $req->aboutcareer;
+            $listItem->tab_active                   = $tab_active;
             $listItem->company_name                 = $req->company_name;
             $listItem->traning_name                 = $req->nama_training;
             $listItem->id_m_category_training_course          = $req->category;
