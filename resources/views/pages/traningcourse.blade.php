@@ -59,7 +59,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                
+
                 <div class="container-fluid mt-4">
                     <div class="row">
                         <div class="col-12">
@@ -67,16 +67,16 @@
                                 <div class="card-header bg-red">
                                     <h3 class="card-title">Side List {{explode('|',$title_page)[1]}}</h3>
                                 </div>
-                                
+
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-0">
-                                            
+
                                               <a type="button" href="{{ route('get-view-store-traningcourse',  ['id' => base64_encode($menus->id)])}}" class="btn btn-primary"><i class="fa fa-plus-circle" aria-hidden="true"></i>
                                               </a>
                                         </div>
                                         <div class="col-1">
-                                            
+
                                             <a type="button" id="filterButton" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i></a>
                                         </div>
                                     </div>
@@ -88,7 +88,7 @@
                                                     <th>No</th>
                                                     <th>Nama Perusahaan</th>
                                                     <th>Nama Training</th>
-                                                    <th>Category</th> 
+                                                    <th>Category</th>
                                                     <th>Nama Sertifikat</th>
                                                     <th>Tanggal Mulai dan Selesai</th>
                                                     <th>Type</th>
@@ -100,7 +100,7 @@
                                                 <!-- Data akan diisi melalui AJAX -->
                                             </tbody>
                                         </table>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +157,7 @@
                                 <!-- Options will be appended here -->
                             </select>
                         </div>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -209,13 +209,13 @@ function escapeHtml(unsafe) {
 
 function formatDateRange(postedDateStr, closeDateStr) {
     if (!postedDateStr || !closeDateStr) return '';
-    
+
     var postedParts = postedDateStr.split(' ')[0].split('-');
     var closeParts = closeDateStr.split(' ')[0].split('-');
-    
+
     var startDate = new Date(postedParts[0], postedParts[1] - 1, postedParts[2]);
     var endDate = new Date(closeParts[0], closeParts[1] - 1, closeParts[2]);
-    
+
     var startDay = startDate.getDate();
     var endDay = endDate.getDate();
     var month = startDate.toLocaleString('default', { month: 'long' });
@@ -242,7 +242,7 @@ $(document).ready(function() {
     $('#filterButton').on('click', function() {
         $('#filterModal').modal('show');
     });
-    
+
     $('#filterModal').on('shown.bs.modal', function() {
         $('#companyNameSelect').select2({
             dropdownParent: $('#filterModal')
@@ -309,7 +309,7 @@ $(document).ready(function() {
     // Function to populate dropdown list
     function loadDropdownData() {
         $.ajax({
-            url: '/public/get-datacourse-filters', // URL endpoint to fetch data
+            url: '/get-datacourse-filters', // URL endpoint to fetch data
             type: 'GET',
             success: function(data) {
                 var companyNameSelect = $('#companyNameSelect');
@@ -375,7 +375,7 @@ $(document).ready(function() {
     // Function to load table data
     function loadTableData(filterValues) {
         $.ajax({
-            url: '/public/get-data-course',
+            url: '/get-data-course',
             type: 'GET',
             data: filterValues,
             success: function(data) {
@@ -383,7 +383,7 @@ $(document).ready(function() {
                 table.clear().draw();
 
                 $.each(data, function(key, value) {
-                    var statusBadge = 
+                    var statusBadge =
                     value.status == '1' ? '<span class="badge badge-primary">Publish</span>' :
                     value.status == '2' ? '<span class="badge badge-warning">Pending</span>' :
                     value.status == '3' ? '<span class="badge badge-secondary">Non Publish</span>' :
@@ -402,7 +402,7 @@ $(document).ready(function() {
                                 <div class="container mt-1">
                                     <div class="row button-container">
                                         <div class="col-4 text-left mb-3">
-                                            <a type="button" style="color:Green" href="/public/edit-traningcourse/${btoa(value.id)}"title="Edit Course" >
+                                            <a type="button" style="color:Green" href="/edit-traningcourse/${btoa(value.id)}"title="Edit Course" >
                                                 <i class="fa fa-bars"></i>
                                             </a>
                                         </div>
@@ -490,7 +490,7 @@ $(document).ready(function() {
             },
         });
     }
-    
+
     function stopPrompt(id) {
         var url = "{{ route('stop-data-course',':id') }}";
         url = url.replace(":id", id);
@@ -549,6 +549,6 @@ $(document).ready(function() {
             }
         });
     }
-    
+
 </script>
 @endsection
